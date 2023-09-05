@@ -1,0 +1,6 @@
+__pychache__
+app/__pychache__
+app/resources/*
+app/.env
+app/users.db
+operatorAPItoken.txt

@@ -1,0 +1,10 @@
+fastapi
+pydantic
+uvicorn
+sqlalchemy
+pyjwt
+cryptography
+bcrypt
+icecream
+neontology
+influxdb-client[extra]
