@@ -17,4 +17,4 @@ inside the ```/webui``` directory.
 
 ## Documentation
 Documentation of the context of use inside of NFDI4Biodiversity can be found here: TBP
-Documentation of the software can be found by building deploying ```docs/_build/html/index.html```.
+Documentation of the software can be found [here](https://scorpion4biodiversity.readthedocs.io/en/latest/)
