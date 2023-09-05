@@ -110,6 +110,7 @@ def create_kpi(kpi: schemas.KPI):
     return kpi
 
 def delete_measurements(service: str, start: str, stop: str):
-    response = get_measurements_for_service(service, start, stop, 0, 100)
+    response = get_measurements_for_service(service, [], start, stop, 0, 100)
     delete_api.delete(start, stop, predicate='service="'+service+'"', bucket=bucket, org=org)
+    print(response)
     return response

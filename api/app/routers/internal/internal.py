@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from icecream import ic
-from utils import models, schemas
+from utils import models, schemas, responses
 from routers.internal.util import crud
 
 router = APIRouter(
@@ -65,6 +65,6 @@ async def create_service(service: schemas.Bonsai):
     result = crud.create_service(service)
     return result
 
-@router.delete('/measurements', response_model=schemas.MeasurementResponse)
+@router.delete('/measurements', response_model=responses.Response[schemas.Measurement])
 async def delete_measurements(service: str, start: str, stop: str):
     return crud.delete_measurements(service, start, stop)
