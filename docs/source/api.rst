@@ -529,9 +529,9 @@ Public Endpoints
 
 .. http:post:: /api/v1/measurements
 
-    Submit KPI measurements for a service. 
+    Submit KPI measurements for a service. Returns a list of all measurements that have been successfully stored.
 
-    .. note:: 
+    .. warning:: 
 
         In order to submit measurements to a service one must first request membership for a service provider. See ```POST /requests/membership``` for more details.
     
