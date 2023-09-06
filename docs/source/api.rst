@@ -1,9 +1,9 @@
 API
 ===
 
-The available REST API is structured into two modules. The first is in regards of ::ref:`aai` and is responsible for user management. The second module lists all ::ref:`publicendpoints`. Those enpoints are mostly ```GET``` calls to receive information about the current data, as well as one ```POST``` endpoint to submit KPI measurements for a service.
+The available REST API is structured into two modules. The first is in regards of :ref:`aai` and is responsible for user management. The second module lists all :ref:`publicendpoints`. Those enpoints are mostly ```GET``` calls to receive information about the current data, as well as one ```POST``` endpoint to submit KPI measurements for a service.
 
-:: _aai:
+.. _aai:
 
 Authentication and Authorization
 --------------------------------
@@ -132,7 +132,7 @@ Authentication and Authorization
           "token": null
         }
 
-:: _publicendpoints:
+.. _publicendpoints:
 
 Public Endpoints
 ----------------
