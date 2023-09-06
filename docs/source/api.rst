@@ -58,23 +58,26 @@ Authentication and Authorization Endpoints
 
     Sign in to the system. The returned JSON Web Token (JWT) must be added as a Bearer token in the ```Authorization``` header to all subsequent calls, in order to be authenticated and access to features can be authorized.
 
+    .. note::
+        The registration process, including the acceptance of the request, must be finished prior to being able to sign in.
+
     **Example requests**:
 
     .. tabs::
 
         .. code-tab:: bash
 
-            $ curl \
-              -X POST \
-              -H "Authorization: Basic ZGVtbzp0b3BzZWNyZXRwYXNzd29yZG5vb25lY2FuZ3Vlc3M=" https://example.com/aai/login \
-              -H "Content-Type: application/json" \
-              -d @body.json
+            $ curl -X 'POST' \
+              'http://example.com/aai/login' \
+              -H 'accept: application/json' \
+              -H 'Authorization: Basic ZGVtbzp0b3BzZWNyZXRwYXNzd29yZG5vb25lY2FuZ3Vlc3M' \
+              -d ''
 
         .. code-tab:: python
 
             import requests
             import json
-            HEADERS = {'Authorization': 'Basic ZGVtbzp0b3BzZWNyZXRwYXNzd29yZG5vb25lY2FuZ3Vlc3M='}
+            HEADERS = {'Authorization': 'Basic ZGVtbzp0b3BzZWNyZXRwYXNzd29yZG5vb25lY2FuZ3Vlc3M'}
             URL = 'https://example.com/aai/login'
             response = requests.post(
                 URL
@@ -82,15 +85,49 @@ Authentication and Authorization Endpoints
             )
             print(response.json())
 
-    .. note::
-        The registration process, including the acceptance of the request, must be finished prior to being able to sign in.
-
+    
     **Example responses**:
     
     .. sourcecode:: json
+
         {
           "detail": "login successful",
           "token": "{TOKEN}"
+        }
+
+.. http:post:: /aai/logout
+
+    Logout from Scorpion. 
+
+    **Example requests**:
+
+    .. tabs::
+
+        .. code-tab:: bash
+
+            $ curl -X 'POST' \
+              'http://example.com/aai/logout' \
+              -H 'accept: application/json' \
+              -d ''
+
+        .. code-tab:: python
+
+            import requests
+            import json
+            URL = 'https://example.com/aai/logout'
+            response = requests.post(
+                URL
+            )
+            print(response.json())
+
+    
+    **Example responses**:
+    
+    .. sourcecode:: json
+
+        {
+          "detail": "logout successful",
+          "token": null
         }
 
 Public Endpoints
