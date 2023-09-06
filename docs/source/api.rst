@@ -1,10 +1,12 @@
 API
 ===
 
-This page is currently under construction. Feel free to visit this page at a later time!
+The available REST API is structured into two modules. The first is in regards of ::ref:`aai` and is responsible for user management. The second module lists all ::ref:`publicendpoints`. Those enpoints are mostly ```GET``` calls to receive information about the current data, as well as one ```POST``` endpoint to submit KPI measurements for a service.
 
-Authentication and Authorization Endpoints
--------------------------------------------
+:: _aai:
+
+Authentication and Authorization
+--------------------------------
 
 .. http:post:: /aai/register
 
@@ -56,7 +58,7 @@ Authentication and Authorization Endpoints
 
 .. http:post:: /aai/login
 
-    Sign in to the system. The returned JSON Web Token (JWT) must be added as a Bearer token in the ```Authorization``` header to all subsequent calls, in order to be authenticated and access to features can be authorized.
+    Sign in to the system. The returned JSON Web Token (JWT) must be added as a Bearer token in the ```Authorization``` header to all subsequent calls in order to be authenticated and access to features can be authorized.
 
     .. note::
         The registration process, including the acceptance of the request, must be finished prior to being able to sign in.
@@ -129,6 +131,8 @@ Authentication and Authorization Endpoints
           "detail": "logout successful",
           "token": null
         }
+
+:: _publicendpoints:
 
 Public Endpoints
 ----------------
