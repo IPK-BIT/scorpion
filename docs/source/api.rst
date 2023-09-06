@@ -179,7 +179,10 @@ Authentication and Authorization
 .. http:post:: /aai/requests/membership
 
     Request a membership to a service provider. This membership is required to register new services to Scorpion and to submit KPI measurements for services of this provider. 
-
+    
+    :query string providers: Comma-seperated list of the abbreviations of the service providers one is requesting membership for.
+                             Allowed values are abbreviations that can be looked up with :ref:`getproviders`
+    
     **Example requests**:
 
     .. tabs::
@@ -216,9 +219,6 @@ Authentication and Authorization
           "username": "demo",
           "provider": "IPK"
         }
-    
-    :query string providers: Comma-seperated list of the abbreviations of the service providers one is requesting membership for.
-                             Allowed values are abbreviations that can be looked up with ::ref:`getproviders`
                           
 
 .. _publicendpoints:
@@ -230,10 +230,13 @@ Public Endpoints
 
 .. http:get:: /api/v1/providers
     
-
+    :query integer page: Pagination parameter to specify the requested page. Default value is 0.
+    :query integer pageSize: Pagination parameter to specify the requested page size. Default value is 100.
+    :query boolean is_member: Query parameter to enable filter the providers by those that the signed in user is member to. Default value is `false`.
+    
     .. note:: 
 
-        The information for which user the details are requested are provided through the JWT Token send via the ```Authorization``` Header.
+        The information for which user the providers are filtered by is provided through the JWT Token send via the ```Authorization``` Header.
 
     **Example request**:
 
@@ -242,14 +245,14 @@ Public Endpoints
         .. code-tab:: bash
 
             $ curl -X 'GET' \
-              'http://example.com/aai/details' \
+              'http://example.com/api/v1/providers' \
               -H 'accept: application/json' \
               -H 'Authorization: Bearer {TOKEN}'
 
         .. code-tab:: python
 
             import requests
-            URL = 'http://example.com/aai/details'
+            URL = 'http://example.com/api/v1/providers'
             TOKEN = '<token>'
             HEADERS = {'Authorization': f'Bearer {TOKEN}'}
             response = requests.get(URL, headers=HEADERS)
