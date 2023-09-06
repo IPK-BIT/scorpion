@@ -7,8 +7,7 @@ Welcome to Scorpion's documentation!
 
    This project is under active development.
 
-Check out the :doc:`usage` section for further information, including
-how to :ref:`installation` the project.
+This documentation provides insights into how to use Scorpion (see ::doc:`usage` for further details) as well as provide documentation of the REST API (see ::doc:`api` for further details.). In addition instructions for the ::doc:`deployment` are provided. 
 
 Contents
 --------

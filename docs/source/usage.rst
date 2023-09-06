@@ -1,9 +1,14 @@
 Usage
 =====
 
-.. _installation:
-
-Installation
+Registration
 ------------
 
-This page is currently under construction. Feel free to visit this page at a later time!
+Service Registration via BONSAI Form
+------------------------------------
+
+KPI Submission using the Web Interface
+--------------------------------------
+
+Visualizations
+--------------
