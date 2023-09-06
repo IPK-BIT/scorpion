@@ -7,7 +7,7 @@ Registration
 The registration process for Scorpion is a two-step process. 
 First, the new user needs to fill out the registration form. 
 
-.. figure:: /docs/img/registration-form.png
+.. figure:: 
     :alt: Registration Form
 
 After that a request is added to the administration panel and 
