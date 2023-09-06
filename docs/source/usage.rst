@@ -8,7 +8,7 @@ The registration process for Scorpion is a two-step process.
 First, the new user needs to fill out the registration form. 
 
 
-.. figure:: ../images/registration-form.png
+.. figure:: images/registration-form.png
     :alt: Registration Form
 
     Registration Form
@@ -24,7 +24,7 @@ services or submit measurements for existing services, membership
 to a service provider needs to be requested. For this the user 
 can visit the `Profile` from the `User Menu`.
 
-.. figure:: /images/user-menu.png
+.. figure:: images/user-menu.png
     :alt: `User Menu` in the top right hand corner.
 
     `User Menu` with entry `Profile` highlighted.
