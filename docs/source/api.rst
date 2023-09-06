@@ -60,10 +60,13 @@ Authentication and Authorization
 
     Sign in to the system. The returned JSON Web Token (JWT) must be added as a Bearer token in the ```Authorization``` header to all subsequent calls in order to be authenticated and access to features can be authorized.
 
-    .. note::
+    .. warning::
         The registration process, including the acceptance of the request, must be finished prior to being able to sign in.
 
     **Example requests**:
+
+    .. tip:: 
+        The login information are encoded as Base64 in the ```Authorization``` header.
 
     .. tabs::
 
@@ -213,8 +216,60 @@ Authentication and Authorization
           "username": "demo",
           "provider": "IPK"
         }
+    
+    :query string providers: Comma-seperated list of the abbreviations of the service providers one is requesting membership for.
+                             Allowed values are abbreviations that can be looked up with ::ref:`getproviders`
+                          
 
 .. _publicendpoints:
 
 Public Endpoints
 ----------------
+
+.. _getproviders:
+
+.. http:get:: /api/v1/providers
+    
+
+    .. note:: 
+
+        The information for which user the details are requested are provided through the JWT Token send via the ```Authorization``` Header.
+
+    **Example request**:
+
+    .. tabs::
+
+        .. code-tab:: bash
+
+            $ curl -X 'GET' \
+              'http://example.com/aai/details' \
+              -H 'accept: application/json' \
+              -H 'Authorization: Bearer {TOKEN}'
+
+        .. code-tab:: python
+
+            import requests
+            URL = 'http://example.com/aai/details'
+            TOKEN = '<token>'
+            HEADERS = {'Authorization': f'Bearer {TOKEN}'}
+            response = requests.get(URL, headers=HEADERS)
+            print(response.json())
+
+    **Example response**:
+
+    .. sourcecode:: json
+
+        {
+          "metadata": {
+            "currentPage": 0,
+            "pageSize": 100,
+            "totalPages": 1,
+            "totalCount": 1
+          },
+          "result": [
+            {
+              "abbreviation": "IPK",
+              "name": "Leibniz Insitut für Pflanzengenetik und Kulturpflanzenforschung Gatersleben"
+            }
+          ]
+        }
