@@ -444,7 +444,7 @@ Public Endpoints
     Retrieve all KPI measurements for a service. The result set is filterable by additional parameters. The pagination is with respect to the date.
     
     :query string service: Mandatory parameter to specify the service for which the measurements should be retrieved.
-    :query string start: Mandatory parameter to specify the start date of the date range.
+    :query string start: Mandatory parameter to specify the start date of the date range. The date is formatted in ```YYYY-MM-DDTHH:MM:SSZ```
     :query string stop: Mandatory parameter to specify the end date of the date range.
     :query integer page: Pagination parameter to specify the requested page. Default value is 0.
     :query integer pageSize: Pagination parameter to specify the requested page size. Default value is 100.
@@ -526,3 +526,64 @@ Public Endpoints
             }
           ]
         }
+
+.. http:post:: /api/v1/measurements
+
+    Submit KPI measurements for a service. 
+
+    .. note:: 
+
+        In order to submit measurements to a service one must first request membership for a service provider. See ```POST /requests/membership``` for more details.
+    
+    :query string service: Mandatory parameter to specify the service for which the measurements should be retrieved.
+    
+    **Example request**:
+
+    .. tabs::
+
+        .. code-tab:: bash
+
+            $ curl \
+              -X POST \
+              -H "Authorization: Bearer <TOKEN>" https://example.com/api/v1/measurements \
+              -H "Content-Type: application/json" \
+              -d @body.json
+
+        .. code-tab:: python
+
+            import requests
+            import json
+            URL = 'https://example.com/api/v1/measurements'
+            TOKEN = '<token>'
+            HEADERS = {'Authorization': f'Bearer {TOKEN}'}
+            data = json.load(open('body.json', 'rb'))
+            response = requests.post(
+                URL,
+                json=data,
+                headers=HEADERS
+            )
+            print(response.json())
+
+    The content of ``body.json`` is like,
+
+    .. sourcecode:: json
+
+        [
+          {
+            "kpi": "Executions",
+            "date": "2023-09",
+            "value": 42
+          }
+        ]
+
+    **Example response**:
+    
+    .. sourcecode:: json
+
+        [
+          {
+            "kpi": "Executions",
+            "date": "2023-09",
+            "value": 42
+          }
+        ]
