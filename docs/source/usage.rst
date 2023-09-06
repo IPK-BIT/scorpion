@@ -24,8 +24,20 @@ services or submit measurements for existing services, membership
 to a service provider needs to be requested. For this the user 
 can visit the `Profile` from the `User Menu`.
 
-.. figure:: ../images/user-menu.png
+.. figure:: /images/user-menu.png
     :alt: `User Menu` in the top right hand corner.
+
+    `User Menu` with entry `Profile` highlighted.
+
+From the `Profile` the user can request membership by opening the 
+dialog with the `Add Button` and selecting the relevant service 
+provider from the drop down menu. After sending the request, an 
+administrator can decide whether to accept or decline the request.
+
+.. figure:: images/profile-view.png
+    :alt: `Profile` view 
+    
+    `Profile` view with an undecided request for membership to a service provider.
 
 Service Registration via BONSAI Form
 ------------------------------------
