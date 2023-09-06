@@ -132,6 +132,88 @@ Authentication and Authorization
           "token": null
         }
 
+.. http:get:: /aai/details
+
+    Retrieve details of a user. Those details are username, email, membership for service providers, and whether the user is an administrator. 
+
+    .. note:: 
+
+        The information for which user the details are requested are provided through the JWT Token send via the ```Authorization``` Header.
+
+    **Example request**:
+
+    .. tabs::
+
+        .. code-tab:: bash
+
+            $ curl -X 'GET' \
+              'http://example.com/aai/details' \
+              -H 'accept: application/json' \
+              -H 'Authorization: Bearer {TOKEN}'
+
+        .. code-tab:: python
+
+            import requests
+            URL = 'http://example.com/aai/details'
+            TOKEN = '<token>'
+            HEADERS = {'Authorization': f'Bearer {TOKEN}'}
+            response = requests.get(URL, headers=HEADERS)
+            print(response.json())
+
+    **Example response**:
+
+    .. sourcecode:: json
+
+        {
+          "user_name": "demo",
+          "email": "demo@example.com",
+          "is_admin": false,
+          "providers": [
+              "IPK"
+          ]
+        }
+
+.. http:post:: /aai/requests/membership
+
+    Request a membership to a service provider. This membership is required to register new services to Scorpion and to submit KPI measurements for services of this provider. 
+
+    **Example requests**:
+
+    .. tabs::
+
+        .. code-tab:: bash
+
+            $ curl -X 'POST' \
+              'http://example.com/aai/requests/membership?providers=IPK' \
+              -H 'accept: application/json' \
+              -H 'Authorization: Bearer <TOKEN>' \
+              -d ''
+
+        .. code-tab:: python
+
+            import requests
+            import json
+            URL = 'https://example.com/aai/logout'
+            TOKEN = '<token>'
+            HEADERS = {'Authorization': f'Bearer {TOKEN}'}
+            response = requests.post(
+                URL,
+                headers=HEADERS
+            )
+            print(response.json())
+
+    
+    **Example responses**:
+    
+    .. sourcecode:: json
+
+        {
+          "id": "c775d812-0e8f-4933-9c03-7179a693593c",
+          "mail": "demo@example.com",
+          "username": "demo",
+          "provider": "IPK"
+        }
+
 .. _publicendpoints:
 
 Public Endpoints
