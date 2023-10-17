@@ -22,6 +22,7 @@
             })
             if (response.status===200) {
                 token.set(response.data.token)
+                localStorage.setItem('token', response.data.token)
                 axios.defaults.headers.common['Authorization']='Bearer '+$token
                 if (user.remember) {
                     //TODO implement storing of token in localstorage

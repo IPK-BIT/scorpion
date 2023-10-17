@@ -36,7 +36,7 @@
                 <li><a href="/about">About</a></li>
                 <li><a href="/docs">API Docs</a></li>
                 <!-- svelte-ignore a11y-missing-attribute -->
-                <li><button class="hover:bg-error" on:click={()=>{token.set(""); goto("/")}}>Logout</button></li>
+                <li><button class="hover:bg-error" on:click={()=>{token.set(""); localStorage.setItem('token', ""); goto("/")}}>Logout</button></li>
             </ul>
         </div>
     </div>
