@@ -1,9 +1,12 @@
 from fastapi import Depends, HTTPException, status, Request
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials, OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 import secrets
 import bcrypt
 import jwt
+import json
+import requests
+import base64
 from datetime import datetime, timedelta
 from utils.dependencies import get_db
 from routers.aai.utils import models, schemas
@@ -62,8 +65,10 @@ class JWTBearer(HTTPBearer):
         credentials: HTTPAuthorizationCredentials = await super(JWTBearer, self).__call__(request)
         if credentials:
             if not credentials.scheme == "Bearer":
+                print('Invalid authentication scheme.')
                 raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid authentication scheme.")
             if not self.verify_jwt(credentials.credentials):
+                print('Invalid or expired token.')
                 raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid or expired token.")
             return credentials.credentials
         else:
@@ -78,3 +83,22 @@ class JWTBearer(HTTPBearer):
         if payload:
             is_token_valid = True
         return is_token_valid
+    
+oauth2_schema = OAuth2PasswordBearer(tokenUrl="https://scorpion.bi.denbi.de/realms/scorpion/protocol/openid-connect/token", scopes={"openid": "OpenID Connect"})
+
+def verify_jwt(jwt: str = Depends(oauth2_schema)):
+    headers = {
+        "Authorization": "Bearer " + jwt
+    }
+    try:
+        response = requests.get("https://scorpion.bi.denbi.de/realms/scorpion/protocol/openid-connect/userinfo", headers=headers)
+        response.raise_for_status()
+        
+        jwt = jwt.split(".")[1]
+        jwt += "=" * ((4 - len(jwt) % 4) % 4)
+        jwt = json.loads(base64.b64decode(jwt))
+        # if "reader" not in jwt["resource_access"]["api"]["roles"]:
+        #     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User not authorized to access this resource.")
+        return response.json()
+    except requests.exceptions.HTTPError as err:
+        raise HTTPException(status_code=err.response.status_code, detail=err.response.text)

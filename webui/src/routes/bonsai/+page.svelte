@@ -132,58 +132,58 @@
                 validationErrors=[...validationErrors, {type: "error", message: "Provider is missing"}]
                 valid=false;
             }
-            if(metadata.description.length===0) {
-                validationErrors=[...validationErrors, {type: "error", message: "Description is missing"}]
-                valid=false;
-            }
-        } else if (currentStep===2) {
-            if (metadata.contact.length===0) {
-                validationErrors=[...validationErrors, {type: "error", message: "Contact is missing"}]
-                valid=false;
-            }
-        } else if (currentStep===4) {
-            if (metadata.registered.biotools.url.length>0 && !isValidHttpUrl(metadata.registered.biotools.url)) {
-                if (!validationErrors.find((e)=>{return e.message==="Biotools: Invalid URL"})) {
-                    validationErrors=[...validationErrors, {type: "warning", message: "Biotools: Invalid URL"}]
-                }
-            } else {
-                validationErrors=validationErrors.filter((e)=>{return e.message!="Biotools: Invalid URL"})
-            }
-            if (metadata.registered.risources.url.length>0 && !isValidHttpUrl(metadata.registered.risources.url)) {
-                if (!validationErrors.find((e)=>{return e.message==="DFG RIsources: Invalid URL"})) {
-                    validationErrors=[...validationErrors, {type: "warning", message: "DFG RIsources: Invalid URL"}]
-                }
-            } else {
-                validationErrors=validationErrors.filter((e)=>{return e.message!="DFG RIsources: Invalid URL"})
-            }
-            if (metadata.registered.eosc.url.length>0 && !isValidHttpUrl(metadata.registered.eosc.url)) {
-                if (!validationErrors.find((e)=>{return e.message==="EOSC Marketplace: Invalid URL"})) {
-                    validationErrors=[...validationErrors, {type: "warning", message: "EOSC Marketplace: Invalid URL"}]
-                }
-            } else {
-                validationErrors=validationErrors.filter((e)=>{return e.message!="EOSC Marketplace: Invalid URL"})
-            }
-            if (metadata.registered.fairsharing.url.length>0 && !isValidHttpUrl(metadata.registered.fairsharing.url)) {
-                if (!validationErrors.find((e)=>{return e.message==="FAIRsharing: Invalid URL"})) {
-                    validationErrors=[...validationErrors, {type: "warning", message: "FAIRsharing: Invalid URL"}]
-                }
-            } else {
-                validationErrors=validationErrors.filter((e)=>{return e.message!="FAIRsharing: Invalid URL"})
-            }
-            if (metadata.registered.re3data.url.length>0 && !isValidHttpUrl(metadata.registered.re3data.url)) {
-                if (!validationErrors.find((e)=>{return e.message==="re3data: Invalid URL"})) {
-                    validationErrors=[...validationErrors, {type: "warning", message: "re3data: Invalid URL"}]
-                }
-            } else {
-                validationErrors=validationErrors.filter((e)=>{return e.message!="re3data: Invalid URL"})
-            }
-            if (metadata.registered.others.url.length>0 && !isValidHttpUrl(metadata.registered.others.url)) {
-                if (!validationErrors.find((e)=>{return e.message==="Others: Invalid URL"})) {
-                    validationErrors=[...validationErrors, {type: "warning", message: "Others: Invalid URL"}]
-                }
-            } else {
-                validationErrors=validationErrors.filter((e)=>{return e.message!="Others: Invalid URL"})
-            }
+            // if(metadata.description.length===0) {
+            //     validationErrors=[...validationErrors, {type: "error", message: "Description is missing"}]
+            //     valid=false;
+            // }
+        // } else if (currentStep===2) {
+        //     if (metadata.contact.length===0) {
+        //         validationErrors=[...validationErrors, {type: "error", message: "Contact is missing"}]
+        //         valid=false;
+        //     }
+        // } else if (currentStep===4) {
+        //     if (metadata.registered.biotools.url.length>0 && !isValidHttpUrl(metadata.registered.biotools.url)) {
+        //         if (!validationErrors.find((e)=>{return e.message==="Biotools: Invalid URL"})) {
+        //             validationErrors=[...validationErrors, {type: "warning", message: "Biotools: Invalid URL"}]
+        //         }
+        //     } else {
+        //         validationErrors=validationErrors.filter((e)=>{return e.message!="Biotools: Invalid URL"})
+        //     }
+        //     if (metadata.registered.risources.url.length>0 && !isValidHttpUrl(metadata.registered.risources.url)) {
+        //         if (!validationErrors.find((e)=>{return e.message==="DFG RIsources: Invalid URL"})) {
+        //             validationErrors=[...validationErrors, {type: "warning", message: "DFG RIsources: Invalid URL"}]
+        //         }
+        //     } else {
+        //         validationErrors=validationErrors.filter((e)=>{return e.message!="DFG RIsources: Invalid URL"})
+        //     }
+        //     if (metadata.registered.eosc.url.length>0 && !isValidHttpUrl(metadata.registered.eosc.url)) {
+        //         if (!validationErrors.find((e)=>{return e.message==="EOSC Marketplace: Invalid URL"})) {
+        //             validationErrors=[...validationErrors, {type: "warning", message: "EOSC Marketplace: Invalid URL"}]
+        //         }
+        //     } else {
+        //         validationErrors=validationErrors.filter((e)=>{return e.message!="EOSC Marketplace: Invalid URL"})
+        //     }
+        //     if (metadata.registered.fairsharing.url.length>0 && !isValidHttpUrl(metadata.registered.fairsharing.url)) {
+        //         if (!validationErrors.find((e)=>{return e.message==="FAIRsharing: Invalid URL"})) {
+        //             validationErrors=[...validationErrors, {type: "warning", message: "FAIRsharing: Invalid URL"}]
+        //         }
+        //     } else {
+        //         validationErrors=validationErrors.filter((e)=>{return e.message!="FAIRsharing: Invalid URL"})
+        //     }
+        //     if (metadata.registered.re3data.url.length>0 && !isValidHttpUrl(metadata.registered.re3data.url)) {
+        //         if (!validationErrors.find((e)=>{return e.message==="re3data: Invalid URL"})) {
+        //             validationErrors=[...validationErrors, {type: "warning", message: "re3data: Invalid URL"}]
+        //         }
+        //     } else {
+        //         validationErrors=validationErrors.filter((e)=>{return e.message!="re3data: Invalid URL"})
+        //     }
+        //     if (metadata.registered.others.url.length>0 && !isValidHttpUrl(metadata.registered.others.url)) {
+        //         if (!validationErrors.find((e)=>{return e.message==="Others: Invalid URL"})) {
+        //             validationErrors=[...validationErrors, {type: "warning", message: "Others: Invalid URL"}]
+        //         }
+        //     } else {
+        //         validationErrors=validationErrors.filter((e)=>{return e.message!="Others: Invalid URL"})
+        //     }
         } else if (currentStep===5) {
             if (metadata.category==="") {
                 validationErrors=[...validationErrors, {type: "error", message: "Category is missing"}]
@@ -337,13 +337,17 @@
             {#if i===0}
             <GeneralInformationForm bind:metadata={metadata}/>
             {:else if i===1}
-            <OrganizationalInformationForm bind:metadata={metadata}/>
+            coming soon
+            <!-- <OrganizationalInformationForm bind:metadata={metadata}/> -->
             {:else if i===2}
-            <SupportForm bind:metadata={metadata}/>
+            coming soon
+            <!-- <SupportForm bind:metadata={metadata}/> -->
             {:else if i===3}
-            <TechnicalInfrastructureForm bind:metadata={metadata}/>
+            coming soon
+            <!-- <TechnicalInfrastructureForm bind:metadata={metadata}/> -->
             {:else if i===4}
-            <DocumentationForm bind:metadata={metadata}/>
+            coming soon
+            <!-- <DocumentationForm bind:metadata={metadata}/> -->
             {:else if i===5}
             <ReportingForm bind:metadata={metadata}/>
             {/if}

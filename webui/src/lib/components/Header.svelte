@@ -1,14 +1,15 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { token } from "$lib/stores/api";
+    import image from "$lib/assets/favicon.png"
     import { Locked, Menu, UserFilled } from "carbon-icons-svelte";
 </script>
 
-<div class="navbar bg-base-300">
+<div class="navbar bg-neutral">
     <div class="dropdown">
         <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
         <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label tabindex="0" class="btn btn-ghost btn-circle">
+        <label tabindex="0" class="btn btn-ghost btn-circle text-white">
           <Menu/>
         </label>
         <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
@@ -19,13 +20,14 @@
         </ul>
       </div>
     <div class="flex-1">
-        <a href="/" class="btn btn-ghost normal-case text-xl">Scorpion</a>
+        <a href="/" class="btn btn-ghost normal-case text-xl text-white">Scorpion</a>
+        <img src={image} style="height: 2em;" alt="Scorpion Icon"/>
     </div>
     <div class="flex-none">
         <div class="dropdown dropdown-end">
             <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
             <!-- svelte-ignore a11y-label-has-associated-control -->
-                <label tabindex="0" class="btn btn-ghost btn-circle">
+                <label tabindex="0" class="btn btn-ghost btn-circle text-white">
                     <div class="indicator">
                         <UserFilled size={24}/>
                     </div>

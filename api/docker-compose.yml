@@ -44,7 +44,7 @@ services:
     ports:
       - 8086:8086
     volumes:
-      - /mnt/database-storage/influxdb2:/var/lib/influxdb2
+      - /mnt/database-storage/new-influxdb2:/var/lib/influxdb2
     healthcheck:
       test: wget http://localhost:8086 || exit 1
       interval: 2s

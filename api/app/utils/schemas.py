@@ -14,7 +14,7 @@ class Measurement(BaseModel):
     kpi: str
     date: str
     value: int
-    comment: str|None
+    # comment: str|None
     
 class Metadata(BaseModel):
     currentPage: int

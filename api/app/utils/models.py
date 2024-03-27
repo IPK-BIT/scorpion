@@ -1,35 +1,39 @@
 from neontology import BaseNode, BaseRelationship
 
 class Service(BaseNode):
+    
     __primaryproperty__="abbreviation"
     __primarylabel__="SERVICE"
     
     name: str
     abbreviation: str
-    areaofapplication: str|None
-    description: str|None
-    inputformats: str|None
-    outputformats: str|None
-    developmentstage: str|None
-    version: str|None
-    documentation: str|None
-    license: str|None
-    link: str|None
-    serviceorientation: str|None
-    includeincataglog: str|None
-    serviceprovidedas: str|None
-    funding: str|None
-    contact: str|None
-    helpdesk: str|None
-    supporteduntil: str|None
-    technicalbackbone: str|None
-    disasterplan: str|None
-    entrancecontrol: str|None
-    operationstability: str|None
-    templates: str|None
-    communication: str|None
-    registered: str|None
-    publications: str|None
+    # areaofapplication: str|None
+    # description: str|None
+    # inputformats: str|None
+    # outputformats: str|None
+    # developmentstage: str|None
+    # version: str|None
+    # documentation: str|None
+    # license: str|None
+    # link: str|None
+    # serviceorientation: str|None
+    # includeincataglog: str|None
+    # serviceprovidedas: str|None
+    # funding: str|None
+    # contact: str|None
+    # helpdesk: str|None
+    # supporteduntil: str|None
+    # technicalbackbone: str|None
+    # disasterplan: str|None
+    # entrancecontrol: str|None
+    # operationstability: str|None
+    # templates: str|None
+    # communication: str|None
+    # registered: str|None
+    # publications: str|None
+    
+    class Config:
+        extra = "allow"
 
 class User(BaseNode):
     __primaryproperty__="id"
@@ -42,7 +46,7 @@ class ServiceCategory(BaseNode):
     __primarylabel__="CATEGORY"
     
     name: str
-    description: str|None
+    # description: str|None
 
 class ServiceProvider(BaseNode):
     __primaryproperty__="providerAbbr"
@@ -72,6 +76,8 @@ class IsMember(BaseRelationship):
     
     source: User
     target: ServiceProvider
+    id: str
+    approved: int
 
 class HasServices(BaseRelationship):
     __relationshiptype__="HAS_SERVICES"

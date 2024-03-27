@@ -10,19 +10,38 @@
     let openError: boolean = false;
     
     async function tryLogin() {
-        function isValidEmail(email: string) {
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-        }
         try {
-            const response = await axios.post("/login", {}, {
-                baseURL: $api.base_url+$api.modules.aai, 
+            // const response = await axios.post("/login", {}, {
+            //     baseURL: $api.base_url+$api.modules.aai, 
+            //     headers: {
+            //         'Authorization': 'Basic '+btoa(user.username+":"+user.password)
+            //     }
+            // })
+            // if (response.status===200) {
+            //     token.set(response.data.token)
+            //     localStorage.setItem('token', response.data.token)
+            //     axios.defaults.headers.common['Authorization']='Bearer '+$token
+            //     if (user.remember) {
+            //         //TODO implement storing of token in localstorage
+            //     }
+            // } else {
+            //     openError=true;
+            // }
+            let params = new URLSearchParams();
+            params.append('grant_type', 'password');
+            params.append('scope', 'openid');
+            params.append('username', user.username);
+            params.append('password', user.password);
+            const response = await axios.post("/token", params, {
+                baseURL: $api.base_url+'/realms/scorpion/protocol/openid-connect',
                 headers: {
-                    'Authorization': 'Basic '+btoa(user.username+":"+user.password)
+                    'Authorization': 'Basic YXBpOllTYTdUMTAxNTFFbGJ5eEJVTFNOeGZWYmx0dGJjV2wy',
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 }
             })
             if (response.status===200) {
-                token.set(response.data.token)
-                localStorage.setItem('token', response.data.token)
+                token.set(response.data.access_token)
+                localStorage.setItem('token', response.data.access_token)
                 axios.defaults.headers.common['Authorization']='Bearer '+$token
                 if (user.remember) {
                     //TODO implement storing of token in localstorage
@@ -72,9 +91,9 @@
       </div>
 </div>
 {/if}
-<div class="hero min-h-screen bg-base-200">
+<div class="hero min-h-screen bg-neutral bg-cover bg-center" style="background-image: url(https://scorpion.bi.denbi.de/scorpion.png);">
     <div class="hero-content flex-col lg:flex-row-reverse">
-        <div class="text-center lg:text-left">
+        <div class="text-center lg:text-left text-white">
             <h1 class="text-5xl font-bold">Scorpion</h1>
             <p class="py-6">Service Monitoring KPI Dashboard of NFDI4Biodiversity</p>
         </div>

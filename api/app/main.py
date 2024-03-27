@@ -7,7 +7,7 @@ from neontology import init_neontology
 from icecream import ic
 
 from utils import sqlite_database
-from utils.jwt_utils import JWTBearer
+from utils.jwt_utils import JWTBearer, verify_jwt
 from routers.aai import aai
 from routers.aai.utils import models as aai_models
 from routers.external import external
@@ -32,16 +32,12 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup_event():
-    init_neontology(
-        neo4j_uri=os.getenv('NEO4J_URI'),
-        neo4j_username=os.getenv('NEO4J_USERNAME'),
-        neo4j_password=os.getenv('NEO4J_PASSWORD')
-    )   
+    init_neontology()
 
 @app.get("/", response_class=RedirectResponse, include_in_schema=False)
 def redirect_docs():
     return "http://localhost:8000/docs"     
 
 app.include_router(aai.router)
-app.include_router(internal.router, dependencies=[Depends(JWTBearer())])
-app.include_router(external.router, dependencies=[Depends(JWTBearer())])
+app.include_router(internal.router, dependencies=[Depends(verify_jwt)])
+app.include_router(external.router, dependencies=[Depends(verify_jwt)])

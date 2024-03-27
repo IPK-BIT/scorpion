@@ -4,23 +4,41 @@
 	import ResultView from "$lib/components/adminpanel/ResultView.svelte";
 	import UserView from "$lib/components/adminpanel/UserView.svelte";
 	import Unauthorized from "$lib/components/pageContents/Unauthorized.svelte";
-    import { api } from "$lib/stores/api";
+    import { api, token } from "$lib/stores/api";
 	import type { UserDetail } from "$lib/stores/types";
 	import axios from "axios";
 	import { ChartLineData, DataClass, Group, Report } from "carbon-icons-svelte";
 	import { onMount } from "svelte";
+    import { jwtDecode } from "jwt-decode";
 
     let details: UserDetail;
+    let context: string = "";
     onMount(async ()=>{
-        const response = await axios.get('/details', {
-            baseURL: $api.base_url+$api.modules.aai
-        })
-        if (response.status===200) {
-            details = response.data
+        // const response = await axios.get('/details', {
+        //     baseURL: $api.base_url+$api.modules.aai
+        // })
+        // if (response.status===200) {
+        //     details = response.data
+        // }
+        // const response = await axios.get('/userinfo', {
+        //     baseURL: $api.base_url+'/realms/scorpion/protocol/openid-connect'
+        // })
+        // if (response.status===200) {
+        //     console.log(response.data)
+        // }
+
+        const jwtToken = $token;
+        if (jwtToken) {
+            const decodedToken = jwtDecode(jwtToken);
+            details = {
+                user_name: decodedToken.preferred_username,
+                email: decodedToken.email,
+                is_admin: decodedToken.realm_access.roles.includes("admin"),
+                providers: [],
+            }
+            
         }
     })
-
-    let context: "users"|"results"|"kpis"|"report"|"" = "";
 </script>
 
 <svelte:head>

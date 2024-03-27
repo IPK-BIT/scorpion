@@ -3,7 +3,7 @@ import type { API, License, ServiceOverview, Token } from "./types";
 
 export const api: Readable<API> = readable(
     {
-        base_url: "http://129.70.51.62",
+        base_url: "https://scorpion.bi.denbi.de",
         modules: {
             aai: "/aai",
             v1: "/api/v1"

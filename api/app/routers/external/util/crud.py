@@ -1,7 +1,10 @@
 from neontology import GraphConnection
+from pydantic import ValidationError
 from utils.influx import write_api, Point, bucket, org, query_api
 import math
 from utils import models, schemas, responses
+
+from icecream import ic
 
 def get_all_providers(skip: int, limit: int):
     db_providers=models.ServiceProvider.match_nodes(skip=skip, limit=limit)
@@ -24,7 +27,7 @@ def get_all_providers(skip: int, limit: int):
 
 def get_providers_by_user(user_id: str, skip: int, limit: int):
     cypher=f"""
-    MATCH (u:USER)-[:IS_MEMBER]->(p:ServiceProvider)
+    MATCH (u:USER)-[:IS_MEMBER {{approved: 1}}]->(p:ServiceProvider)
     WHERE u.id=$user_id
     RETURN p
     """
@@ -60,7 +63,7 @@ def get_all_categories(skip: int, limit: int):
         if (idx>=skip and idx<limit+skip):
             results.append(schemas.ServiceCategory(
                 name=db_category.name,
-                description=db_category.description
+                # description=db_category.description
             ))
         ctr=ctr+1
     return responses.Response(
@@ -101,7 +104,6 @@ def create_measurement(user_id, service: str, measurement: schemas.Measurement):
     graph = GraphConnection()
     provider=graph.cypher_read_many(cypher, params)[0]["p"]
     db_kpi = models.KPI.match(measurement.kpi)
-    print(check_membership(user_id, provider=provider["providerAbbr"]))
     if not check_membership(user_id, provider=provider["providerAbbr"]):
         return None
     if db_kpi is None:
@@ -195,6 +197,7 @@ def get_measurements_for_service(service: str, indicator_list: list[str], start:
     """.format(start=start, stop=stop, service=service)
     
     results=[]
+    print(results)
     tables = query_api.query(query=query, org="scorpion")
     skip = page*pageSize
     limit = page*pageSize+pageSize
@@ -218,8 +221,8 @@ def get_measurements_for_service(service: str, indicator_list: list[str], start:
 def get_all_services(skip: int, limit: int, provider: str|None, service: str|None):
     cypher = f"""
     MATCH (c:CATEGORY)<-[:OF_CATEGORY]-(s:SERVICE)<-[:HAS_SERVICES]-(p:ServiceProvider)
-    WHERE (p.providerAbbr=$provider or $provider is null) AND (s.abbreviation=$service or $service is null)
-    RETURN s,c,p
+    WHERE (p.providerAbbr in split($provider,',') or $provider is null) AND (s.abbreviation=$service or $service is null)
+    RETURN s {{.name, .abbreviation}},c {{.name}},p {{.providerAbbr, .providerName}}
     """
     params={
         "provider": provider, 
@@ -227,6 +230,17 @@ def get_all_services(skip: int, limit: int, provider: str|None, service: str|Non
     }
     graph = GraphConnection()
     records = graph.cypher_read_many(cypher, params)
+    
+    # ic(records)
+
+    # for record in records:
+    #     # ic(record["s"])
+    #     try:
+    #         ic(models.Service.parse_obj(record["s"]))
+    #     except ValidationError as e:
+    #         ic(repr(e.errors()[0]))
+    
+    # db_results = []
     db_results = [{
         "service": models.Service.parse_obj(record["s"]), 
         "category": models.ServiceCategory.parse_obj(record["c"]),
@@ -235,6 +249,7 @@ def get_all_services(skip: int, limit: int, provider: str|None, service: str|Non
     results = []
     ctr = 0
     for idx, db_result in enumerate(db_results):
+        # ic(db_result)
         if (idx>=skip and idx<skip+limit):
             results.append(schemas.Service(
                 abbreviation=db_result["service"].abbreviation,

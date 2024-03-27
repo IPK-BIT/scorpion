@@ -50,7 +50,7 @@
             {/each}
         </select>
     </div>
-    <div class="join">
+    <!-- <div class="join">
         <span class="join-item label px-2 bg-base-200 w-1/6">Area of Application</span>
         <div class="join-item bg-base-100 w-5/6 p-1 border border-neutral border-opacity-40">
             <div class="form-control">
@@ -133,5 +133,5 @@
     <div class="join">
         <span class="join-item label px-2 bg-base-200 w-1/6">Link to Service</span>
         <input type="text" placeholder="Enter link to service" class="join-item input input-bordered w-5/6" bind:value={metadata.link} />
-    </div>
+    </div> -->
 </form>

@@ -8,3 +8,4 @@ bcrypt
 icecream
 neontology
 influxdb-client[extra]
+requests

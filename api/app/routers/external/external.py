@@ -16,13 +16,13 @@ router = APIRouter(
 )
 
 @router.get("/providers", response_model=responses.Response[schemas.ServiceProvider])
-async def list_providers(commons: CommonDeps, token: HTTPAuthorizationCredentials = Depends(jwt_utils.JWTBearer()), is_member: bool|None = None):
+async def list_providers(commons: CommonDeps, token: dict = Depends(jwt_utils.verify_jwt), is_member: bool|None = None):
     page = commons["page"] if commons["page"]!=None else 0
     pageSize = commons["pageSize"] if commons["pageSize"]!=None else 100
     skip = page*pageSize
     limit = pageSize
     if (is_member):
-        return crud.get_providers_by_user(jwt_utils.read(token)["id"], skip, limit)
+        return crud.get_providers_by_user(token["sub"], skip, limit)
     return crud.get_all_providers(skip, limit)
 
 @router.get("/categories", response_model=responses.Response[schemas.ServiceCategory])
@@ -50,7 +50,7 @@ async def list_services(commons: CommonDeps, provider: str|None = None, service:
     return crud.get_all_services(skip, limit, provider, service)
 
 @router.get('/measurements', response_model=responses.Response[schemas.Measurement])
-async def list_measurements(commons: CommonDeps, service: str, indicators: str|None = None, start: str = "2022-01-01T00:00:00Z", stop: str = "2023-12-31T00:00:00Z"):
+async def list_measurements(commons: CommonDeps, service: str, indicators: str|None = None, start: str = "2022-01-01T00:00:00Z", stop: str = "2030-12-31T00:00:00Z"):
     page = commons["page"] if commons["page"]!=None else 0
     pageSize = commons["pageSize"] if commons["pageSize"]!=None else 100
     if not indicators: 
@@ -63,13 +63,12 @@ async def list_measurements(commons: CommonDeps, service: str, indicators: str|N
 async def create_measurements(
     service: str,
     measurements: list[schemas.Measurement]|schemas.Measurement,
-    token: HTTPAuthorizationCredentials = Depends(jwt_utils.JWTBearer())
+    token: dict = Depends(jwt_utils.verify_jwt)
 ):
-    user_id=jwt_utils.read(token)["id"]
+    user_id=token['sub']
     results = []
     if isinstance(measurements, list):
         for measurement in measurements:
-            print(measurement)
             result = crud.create_measurement(user_id, service, measurement)
             if not result is None:
                 results.append(result)

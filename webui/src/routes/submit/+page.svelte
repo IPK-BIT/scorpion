@@ -1,7 +1,7 @@
 <script lang="ts">
     import { necessities } from "$lib/stores/admin";
-import { api } from "$lib/stores/api";
-	import type { KPI, Measurement, MeasurementCollector, Service } from "$lib/stores/types";
+    import { api } from "$lib/stores/api";
+    import type { KPI, Measurement, MeasurementCollector, Service } from "$lib/stores/types";
     import axios from "axios";
     import { Information } from "carbon-icons-svelte";
     import { onMount } from "svelte";
@@ -10,12 +10,23 @@ import { api } from "$lib/stores/api";
     let selectedService: number;
     
     onMount(async ()=>{
-        //TODO add provider-check by user
-        const response = await axios.get("/services", {
-            baseURL: $api.base_url+$api.modules.v1
+        let providers = [];
+        let response = await axios.get('/details', {
+            baseURL: $api.base_url+$api.modules.aai
         })
         if (response.status===200) {
-            services = response.data.result;
+            providers = response.data.providers;
+        }
+        if (providers.length>0) {   
+            response = await axios.get("/services", {
+                baseURL: $api.base_url+$api.modules.v1,
+                params: {
+                    provider: providers.join(",")
+                }
+            })
+            if (response.status===200) {
+                services = response.data.result;
+            }
         }
     })
     
@@ -37,14 +48,12 @@ import { api } from "$lib/stores/api";
             ...kpis.filter((elem)=>{return elem.categories.find((c)=>{return c.name===services[selectedService].category})?.necessity==="optional"}),
             ...kpis.filter((elem)=>{return elem.selected && elem.categories.find((c)=>{return c.name===services[selectedService].category})?.necessity===null})
             ]
-            console.log(kpis)
             measurementCollector.name = service.name;
             for (let kpi of kpis) {
                 //@ts-ignore
                 measurementCollector[kpi.name] = null;
             }
         }
-        console.log(measurementCollector)
     }
     let clickedKPI: number = 0;
     
@@ -91,11 +100,11 @@ import { api } from "$lib/stores/api";
 <div class="fixed top-16 right-0 z-10 w-1/5 p-4">
     {#each inserted as msg}
     <div class="alert alert-success shadow-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span>{msg.kpi} on {msg.date}: {msg.value}</span>
-            <button on:click={()=>{removeMsg(msg)}}>✕</button>
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>{msg.kpi} on {msg.date}: {msg.value}</span>
+        <button on:click={()=>{removeMsg(msg)}}>✕</button>
     </div>
     {/each}
 </div>
@@ -156,7 +165,7 @@ import { api } from "$lib/stores/api";
     <label for="kpi-description" class="modal cursor-pointer">
         <label class="modal-box relative" for="">
             <h3 class="text-lg font-bold">Description for {kpis[clickedKPI].name}</h3>
-            <p class="italic text-sm">Necessity: {kpis[clickedKPI].necessity?kpis[clickedKPI].necessity:"optional"}</p>
+            <p class="italic text-sm">Necessity: {kpis[clickedKPI].categories.find((c)=>{return c.name===services[selectedService].category})?.necessity}</p>
             <p>{kpis[clickedKPI].description}</p>
         </label>
     </label>
