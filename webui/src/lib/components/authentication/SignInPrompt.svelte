@@ -5,6 +5,7 @@
     import ResetCard from "$lib/components/authentication/ResetCard.svelte";
     import SignInCard from "$lib/components/authentication/SignInCard.svelte";
 	import type { UserAuthentication } from "$lib/stores/types";
+
     
     let user: UserAuthentication;
     let openError: boolean = false;
@@ -32,10 +33,11 @@
             params.append('scope', 'openid');
             params.append('username', user.username);
             params.append('password', user.password);
+            let api_key = import.meta.env.VITE_API_KEY;
             const response = await axios.post("/token", params, {
                 baseURL: $api.base_url+'/realms/scorpion/protocol/openid-connect',
                 headers: {
-                    'Authorization': 'Basic YXBpOllTYTdUMTAxNTFFbGJ5eEJVTFNOeGZWYmx0dGJjV2wy',
+                    'Authorization': 'Basic '+api_key,
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             })
