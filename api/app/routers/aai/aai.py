@@ -233,19 +233,18 @@ async def list_all_users(jwt: dict = Depends(jwt_utils.verify_jwt)):
     users = kc_response.json()
     results = []
     for user in users:
-        if 'service-account' in user['username']:
-            break
-        is_admin = await check_admin_role({'sub': user['id']}, token)
-        
-        providers = read_providers_by_user(user['id'])
-        
-        results.append(schemas.UserDetail(
-            user_id=user['id'],
-            email=user['email'],
-            user_name=user['username'],
-            is_admin=is_admin,
-            providers=providers
-        ))
+        if not 'service-account' in user['username']:
+            is_admin = await check_admin_role({'sub': user['id']}, token)
+            
+            providers = read_providers_by_user(user['id'])
+            
+            results.append(schemas.UserDetail(
+                user_id=user['id'],
+                email=user['email'],
+                user_name=user['username'],
+                is_admin=is_admin,
+                providers=providers
+            ))
     return results
 
 @router.put('/users', response_model=schemas.UserDetail, include_in_schema=False)
