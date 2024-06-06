@@ -27,16 +27,33 @@
         //     console.log(response.data)
         // }
 
-        const jwtToken = $token;
-        if (jwtToken) {
-            const decodedToken = jwtDecode(jwtToken);
-            details = {
-                user_name: decodedToken.preferred_username,
-                email: decodedToken.email,
-                is_admin: decodedToken.realm_access.roles.includes("admin"),
-                providers: [],
-            }
+        // const jwtToken = $token;
+        // if (jwtToken) {
+        //     const decodedToken = jwtDecode(jwtToken);
+        //     details = {
+        //         user_name: decodedToken.preferred_username,
+        //         email: decodedToken.email,
+        //         is_admin: true,//decodedToken.realm_access.roles.includes("admin"),
+        //         providers: [],
+        //     }
             
+        // }
+
+        try {
+            const response = await axios.get('/details', {
+                baseURL: $api.base_url+$api.modules.aai,
+            });
+            if (response.status===200) {
+                details = response.data;
+            };
+        } catch (error) {
+            console.log(error);
+            details = {
+                user_name: "",
+                email: "",
+                is_admin: false,
+                providers: [],
+            };
         }
     })
 </script>

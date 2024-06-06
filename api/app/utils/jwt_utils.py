@@ -91,7 +91,8 @@ def verify_jwt(jwt: str = Depends(oauth2_schema)):
         "Authorization": "Bearer " + jwt
     }
     try:
-        response = requests.get("https://scorpion.bi.denbi.de/realms/scorpion/protocol/openid-connect/userinfo", headers=headers)
+        # response = requests.get("https://scorpion.bi.denbi.de/realms/scorpion/protocol/openid-connect/userinfo", headers=headers)
+        response = requests.get("https://login.aai.lifescience-ri.eu/oidc/userinfo", headers=headers)
         response.raise_for_status()
         
         jwt = jwt.split(".")[1]

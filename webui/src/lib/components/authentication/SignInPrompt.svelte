@@ -5,6 +5,7 @@
     import ResetCard from "$lib/components/authentication/ResetCard.svelte";
     import SignInCard from "$lib/components/authentication/SignInCard.svelte";
 	import type { UserAuthentication } from "$lib/stores/types";
+	import LsLogin from "./LSLogin.svelte";
 
     
     let user: UserAuthentication;
@@ -77,7 +78,9 @@
     async function tryReset() {
         alert("Not yet implemented")
     }
-    let context: "login"|"register"|"reset" = "login";
+
+    
+    let context: "login"|"register"|"reset"|"lslogin" = "login";
 </script>
 
 <svelte:head>
@@ -97,9 +100,9 @@
     <div class="hero-content flex-col lg:flex-row-reverse">
         <div class="text-center lg:text-left text-white">
             <h1 class="text-5xl font-bold">Scorpion</h1>
-            <p class="py-6">Service Monitoring KPI Dashboard of NFDI4Biodiversity</p>
+            <p class="py-6">Service Monitoring KPI Dashboard for NFDI</p>
         </div>
-        {#if context==="reset"}
+        <!-- {#if context==="reset"}
         <ResetCard 
         on:submit={tryReset} 
         on:loginRequest={()=>{context="login"}}
@@ -111,13 +114,17 @@
         on:submit={tryRegister}
         on:loginRequest={()=>{context="login"}}
         />
+        {:else if context==="lslogin"}
+        <LsLogin/>
         {:else}
         <SignInCard 
         bind:user 
         on:submit={tryLogin} 
         on:registerRequest={()=>{context="register"}} 
         on:resetRequest={()=>{context="reset"}}
+        on:lsLoginRequest={()=>{context="lslogin"}}
         />
-        {/if}
+        {/if} -->
+        <LsLogin/>
     </div>
 </div>

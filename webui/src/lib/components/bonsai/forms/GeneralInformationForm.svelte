@@ -119,8 +119,8 @@
     <div class="join">
         <span class="join-item label px-2 bg-base-200 w-1/6">Documentation</span>
         <input type="text" placeholder="Enter link to documentation..." class="join-item input input-bordered w-5/6" bind:value={metadata.documentation} />
-    </div>
-    <div class="join">
+    </div> -->
+    <!-- <div class="join">
         <span class="join-item label px-2 bg-base-200 w-1/6">License</span>
         <select class="join-item w-4/6 select select-bordered" bind:value={metadata.license}>
             <option value="" disabled selected>Select a License</option>
@@ -128,9 +128,9 @@
                 <option value={license.licenseId}>{license.name}</option>
             {/each}
         </select>
-        <a class="join-item bg-secondary w-1/6 btn" target="_blank" href={$licenses.find((l)=>{return l.licenseId===metadata.license})?.seeAlso[0]||""}><Information/>License Info</a>
-    </div>
-    <div class="join">
+        <a class="join-item bg-accent w-1/6 btn" target="_blank" href={$licenses.find((l)=>{return l.licenseId===metadata.license})?.seeAlso[0]||""}><Information/>License Info</a>
+    </div> -->
+    <!-- <div class="join">
         <span class="join-item label px-2 bg-base-200 w-1/6">Link to Service</span>
         <input type="text" placeholder="Enter link to service" class="join-item input input-bordered w-5/6" bind:value={metadata.link} />
     </div> -->

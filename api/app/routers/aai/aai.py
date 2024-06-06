@@ -149,14 +149,25 @@ async def remove_registration_request(request_id:str, is_admin: bool, accept: bo
 
 @router.get('/details', response_model=schemas.UserDetail)
 async def get_user(current_user: dict = Depends(jwt_utils.verify_jwt)):
-    token = await get_admin_access_token()
-    is_admin = await check_admin_role(current_user, token)
-    providers = read_providers_by_user(current_user['sub'])
+    # token = await get_admin_access_token()
+    # is_admin = await check_admin_role(current_user, token)
+    # providers = read_providers_by_user(current_user['sub'])
+    # return schemas.UserDetail(
+    #     user_name=current_user['preferred_username'],
+    #     email=current_user['email'],
+    #     is_admin=is_admin,
+    #     providers=providers
+    # )
+    print(current_user)
+    neo_user = neo_models.User.match(current_user['sub'])
+    if not neo_user:
+        neo_user = neo_models.User(id=current_user['sub'], admin=False)
+        neo_user.create()
     return schemas.UserDetail(
         user_name=current_user['preferred_username'],
         email=current_user['email'],
-        is_admin=is_admin,
-        providers=providers
+        is_admin=neo_user.admin,
+        providers=read_providers_by_user(current_user['sub'])
     )
     
 @router.post('/requests/membership', response_model=schemas.Request, status_code=status.HTTP_201_CREATED)

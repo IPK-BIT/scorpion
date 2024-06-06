@@ -12,6 +12,8 @@
     const dispatch = createEventDispatcher();
     function sendRegister() {dispatch('registerRequest', {})}
     function sendReset() {dispatch('resetRequest', {})}
+    function sendLSLogin() {dispatch('lsLoginRequest', {})}
+
 </script>
 
 <div class="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
@@ -36,6 +38,9 @@
                 <!-- svelte-ignore a11y-missing-attribute -->
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <!--<a class="label-text-alt link link-hover" on:click={sendReset}>Forgot password?</a>-->
+                <!-- svelte-ignore a11y-missing-attribute -->
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <a class="label-text-alt link link-hover" on:click={sendLSLogin}>LS Login</a>
             </label>
         </div>
         <div class="form-control">

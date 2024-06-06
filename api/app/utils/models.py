@@ -40,6 +40,7 @@ class User(BaseNode):
     __primarylabel__="USER"
     
     id: str
+    admin: bool
 
 class ServiceCategory(BaseNode):
     __primaryproperty__="name"

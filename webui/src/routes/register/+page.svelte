@@ -88,19 +88,21 @@
     }[] = [{
         active: "step-primary", 
         title: "General Information"
-    }, {
-        active: "", 
-        title: "Organizational Information"
-    },{
-        active: "", 
-        title: "Support"
-    }, {
-        active: "", 
-        title: "Technical Infrastructure"
-    }, {
-        active: "", 
-        title: "Documentation"
-    }, {
+    }, 
+    // {
+    //     active: "", 
+    //     title: "Organizational Information"
+    // },{
+    //     active: "", 
+    //     title: "Support"
+    // }, {
+    //     active: "", 
+    //     title: "Technical Infrastructure"
+    // }, {
+    //     active: "", 
+    //     title: "Documentation"
+    // }, 
+    {
         active: "", 
         title: "Reporting"
     }]   
@@ -207,7 +209,7 @@
     
     let validationErrors:{type: "error"|"warning", message: string}[] = [];
     
-    async function finishBONSAI() {
+    async function finishRegistration() {
         if (validatePage()) {
             let resp = await axios.post('/bonsai', metadata, {
                 baseURL: $api.base_url+$api.modules.v1
@@ -312,7 +314,7 @@
 </script>
 
 <svelte:head>
-<title>BONSAI Form</title>
+<title>Service Registration Form</title>
 <meta name="description" content="Biodiversity Onboarding Service Application Form" />
 </svelte:head>
 
@@ -328,27 +330,28 @@
     <div class="min-h-[25rem] flex justify-center min-w-full">
         {#each steps as step, i}
         {#if currentStep===i}
-        <UploadCard title={step.title} isFirst={i===0} isLast={i===5}
+        <UploadCard title={step.title} isFirst={i===0} isLast={i===1}
         on:previous={()=>{if(i!=0){navigate('previous')}}} 
         on:next={()=>{if(i!=5){navigate('next')}}} 
-        on:finish={finishBONSAI}
+        on:finish={finishRegistration}
         >
         <div slot="card-content">
             {#if i===0}
             <GeneralInformationForm bind:metadata={metadata}/>
-            {:else if i===1}
-            coming soon
+            <!-- {:else if i===1} -->
+            <!-- coming soon -->
             <!-- <OrganizationalInformationForm bind:metadata={metadata}/> -->
-            {:else if i===2}
-            coming soon
+            <!-- {:else if i===2} -->
+            <!-- coming soon -->
             <!-- <SupportForm bind:metadata={metadata}/> -->
-            {:else if i===3}
-            coming soon
+            <!-- {:else if i===3} -->
+            <!-- coming soon -->
             <!-- <TechnicalInfrastructureForm bind:metadata={metadata}/> -->
-            {:else if i===4}
-            coming soon
+            <!-- {:else if i===4} -->
+            <!-- coming soon -->
             <!-- <DocumentationForm bind:metadata={metadata}/> -->
-            {:else if i===5}
+            <!-- {:else if i===5} -->
+            {:else}
             <ReportingForm bind:metadata={metadata}/>
             {/if}
         </div>

@@ -80,6 +80,7 @@
             <option>Workflows</option>
             <option>Supports</option>
             <option>Trainings</option>
+            <option>Consortia</option>
         </select>
     </div>
     {#if categoryKPI}
