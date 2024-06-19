@@ -7,6 +7,8 @@ class Service(BaseNode):
     
     name: str
     abbreviation: str
+    stage: str
+    license: str
     # areaofapplication: str|None
     # description: str|None
     # inputformats: str|None
@@ -41,6 +43,8 @@ class User(BaseNode):
     
     id: str
     admin: bool
+    username: str
+    email: str
 
 class ServiceCategory(BaseNode):
     __primaryproperty__="name"
@@ -55,6 +59,12 @@ class ServiceProvider(BaseNode):
     
     providerAbbr: str
     providerName: str
+
+class Consortia(BaseNode):
+    __primaryproperty__="name"
+    __primarylabel__="CONSORTIA"
+    
+    name: str
 
 class KPI(BaseNode):
     __primaryproperty__="name"
@@ -116,3 +126,9 @@ class Defines(BaseRelationship):
     source: ServiceCategory|Service
     target: KPI
     necessity: str
+
+class ProvidedIn(BaseRelationship):
+    __relationshiptype__="PROVIDED_IN"
+    
+    source: Service
+    target: Consortia

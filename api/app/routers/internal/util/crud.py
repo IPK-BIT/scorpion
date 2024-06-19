@@ -32,33 +32,42 @@ def create_service(service: schemas.Bonsai):
     if db_category is None:
         print("Category not found!")
         return None
+    db_consortia = []
+    graph = GraphConnection()
+    for consortium in service.consortia:
+        db_consortia.append(models.Consortia.parse_obj(graph.cypher_read(f"""MATCH (c:CONSORTIA) WHERE c.name=$consortium RETURN c {{ .name }}""", {"consortium": consortium})['c']))
+        # db_consortia.append(models.Consortia.match(consortium))
+        
+    
     db_service = models.Service(
         abbreviation=service.abbreviation,
         name=service.name,
-        description=service.description,
-        areaofapplication=json.dumps(service.areaofapplication.json()),
-        inputformats=service.inputformats,
-        outputformats=service.outputformats,
-        developmentstage=service.developmentstage,
-        version=service.version,
-        documentation=service.documentation,
         license=service.license,
-        link=service.link,
-        serviceorientation=service.serviceorientation,
-        includeincataglog=service.includeincataglog,
-        serviceprovidedas=json.dumps(service.serviceprovidedas.json()),
-        funding=service.funding,
-        contact=service.contact,
-        helpdesk=service.helpdesk,
-        supporteduntil=service.supporteduntil,
-        technicalbackbone=service.technicalbackbone,
-        disasterplan=service.disasterplan,
-        entrancecontrol=service.entrancecontrol,
-        operationstability=service.operationstability,
-        templates=service.templates,
-        communication=service.communication,
-        registered=json.dumps(service.registered.json()),
-        publications=service.publications
+        stage=service.stage,
+        # description=service.description,
+        # areaofapplication=json.dumps(service.areaofapplication.json()),
+        # inputformats=service.inputformats,
+        # outputformats=service.outputformats,
+        # developmentstage=service.developmentstage,
+        # version=service.version,
+        # documentation=service.documentation,
+        # license=service.license,
+        # link=service.link,
+        # serviceorientation=service.serviceorientation,
+        # includeincataglog=service.includeincataglog,
+        # serviceprovidedas=json.dumps(service.serviceprovidedas.json()),
+        # funding=service.funding,
+        # contact=service.contact,
+        # helpdesk=service.helpdesk,
+        # supporteduntil=service.supporteduntil,
+        # technicalbackbone=service.technicalbackbone,
+        # disasterplan=service.disasterplan,
+        # entrancecontrol=service.entrancecontrol,
+        # operationstability=service.operationstability,
+        # templates=service.templates,
+        # communication=service.communication,
+        # registered=json.dumps(service.registered.json()),
+        # publications=service.publications
     )
     db_service.create()
     has_service = models.HasServices(
@@ -79,6 +88,13 @@ def create_service(service: schemas.Bonsai):
             necessity="optional"
         )
         defines.merge()
+    print(db_consortia)
+    for consortium in db_consortia:
+        provided_in = models.ProvidedIn(
+            source=db_service,
+            target=consortium
+        )
+        provided_in.merge()
     return service
 
 def create_category(category: schemas.ServiceCategory):

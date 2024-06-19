@@ -75,29 +75,32 @@ class Bonsai(BaseModel):
     name: str
     abbreviation: str
     provider: str
-    areaofapplication: ServiceArea|None
-    description: str|None
-    inputformats: str|None
-    outputformats: str|None
-    developmentstage: str|None
-    version: str|None
-    documentation: str|None
-    license: str|None
-    link: str|None
-    serviceorientation: str|None
-    includeincataglog: str|None
-    serviceprovidedas: ServicePartOf|None
-    funding: str|None
-    contact: str|None
-    helpdesk: str|None
-    supporteduntil: str|None
-    technicalbackbone: str|None
-    disasterplan: str|None
-    entrancecontrol: str|None
-    operationstability: str|None
-    templates: str|None
-    communication: str|None
-    registered: ServiceRegistration|None
-    publications: str|None
-    category: str
+    # areaofapplication: ServiceArea|None
+    # description: str|None
+    # inputformats: str|None
+    # outputformats: str|None
+    # developmentstage: str|None
+    # version: str|None
+    # documentation: str|None
+    # license: str|None
+    # link: str|None
+    # serviceorientation: str|None
+    # includeincataglog: str|None
+    # serviceprovidedas: ServicePartOf|None
+    # funding: str|None
+    # contact: str|None
+    # helpdesk: str|None
+    # supporteduntil: str|None
+    # technicalbackbone: str|None
+    # disasterplan: str|None
+    # entrancecontrol: str|None
+    # operationstability: str|None
+    # templates: str|None
+    # communication: str|None
+    # registered: ServiceRegistration|None
+    # publications: str|None
     additionalKPI: list[KPI]
+    consortia: list[str]
+    license: str|None
+    category: str
+    stage: str|None

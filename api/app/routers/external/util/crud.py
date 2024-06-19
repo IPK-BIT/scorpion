@@ -209,8 +209,8 @@ def get_measurements_for_service(service: str, indicator_list: list[str], start:
     metadata=schemas.Metadata(
         currentPage=page,
         pageSize=pageSize,
-        totalCount=len(tables[0].records),
-        totalPages=math.ceil(len(tables[0].records)/pageSize)
+        totalCount=len(tables[0].records) if len(tables)>0 else 0,
+        totalPages=math.ceil(len(tables[0].records)/pageSize) if len(tables)>0 else 0
     )
     print(results)
     return responses.Response(
@@ -222,7 +222,7 @@ def get_all_services(skip: int, limit: int, provider: str|None, service: str|Non
     cypher = f"""
     MATCH (c:CATEGORY)<-[:OF_CATEGORY]-(s:SERVICE)<-[:HAS_SERVICES]-(p:ServiceProvider)
     WHERE (p.providerAbbr in split($provider,',') or $provider is null) AND (s.abbreviation=$service or $service is null)
-    RETURN s {{.name, .abbreviation}},c {{.name}},p {{.providerAbbr, .providerName}}
+    RETURN s {{.name, .abbreviation, .license, .stage}},c {{.name}},p {{.providerAbbr, .providerName}}
     """
     params={
         "provider": provider, 

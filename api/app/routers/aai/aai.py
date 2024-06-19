@@ -161,7 +161,7 @@ async def get_user(current_user: dict = Depends(jwt_utils.verify_jwt)):
     print(current_user)
     neo_user = neo_models.User.match(current_user['sub'])
     if not neo_user:
-        neo_user = neo_models.User(id=current_user['sub'], admin=False)
+        neo_user = neo_models.User(id=current_user['sub'], admin=False, username=current_user['preferred_username'], email=current_user['email'])
         neo_user.create()
     return schemas.UserDetail(
         user_name=current_user['preferred_username'],
@@ -198,26 +198,28 @@ async def get_membership_requests(jwt: dict = Depends(jwt_utils.verify_jwt)):
     """
     graph=GraphConnection()
     results = graph.cypher_read_many(cypher)
-    token = await get_admin_access_token()
-    kc_response = requests.get(f"https://scorpion.bi.denbi.de/admin/realms/scorpion/users?enabled=True", headers={'Authorization': f'Bearer {token}'})
-    kc_response.raise_for_status()
-    users = kc_response.json()
+    # token = await get_admin_access_token()
+    # kc_response = requests.get(f"https://scorpion.bi.denbi.de/admin/realms/scorpion/users?enabled=True", headers={'Authorization': f'Bearer {token}'})
+    # kc_response.raise_for_status()
+    # users = kc_response.json()
     member_requests=[]
     for result in results:
-        user = next((user for user in users if user['id'] == result['u']['id']), None)
+        # user = next((user for user in users if user['id'] == result['u']['id']), None)
         member_requests.append(schemas.Request(
             id=result['m']['id'],
-            mail=user['email'],
-            username=user['username'],
+            # mail=jwt['email'],
+            # username=jwt['username'],
+            mail=result['u']['email'],
+            username=result['u']['username'],
             provider=result['p']['providerAbbr']
         ))
     return member_requests
 
 @router.delete('/requests/membership', response_model=schemas.Request|None, include_in_schema=False)
-async def remove_membership_request(request_id:str, accept: bool, response: Response, jwt: dict = Depends(jwt_utils.verify_jwt)):
-    token = await get_admin_access_token()
-    if await check_admin_role(jwt, token):
-        graph=GraphConnection()
+async def remove_membership_request(request_id:str, accept: bool, response: Response, jwt: dict = Depends(jwt_utils.verify_jwt)):    
+    neo_user = neo_models.User.match(jwt['sub'])    
+    if neo_user.admin:
+        graph = GraphConnection()
         if accept:
             cypher = f"""
             MATCH (:USER)-[m:IS_MEMBER {{id: '{request_id}'}}]->(:ServiceProvider)
@@ -238,24 +240,34 @@ async def remove_membership_request(request_id:str, accept: bool, response: Resp
     
 @router.get('/users', response_model=list[schemas.UserDetail], include_in_schema=False)
 async def list_all_users(jwt: dict = Depends(jwt_utils.verify_jwt)):
-    token = await get_admin_access_token()
-    kc_response = requests.get(f"https://scorpion.bi.denbi.de/admin/realms/scorpion/users?enabled=True", headers={'Authorization': f'Bearer {token}'})
-    kc_response.raise_for_status()
-    users = kc_response.json()
+    # token = await get_admin_access_token()
+    # kc_response = requests.get(f"https://scorpion.bi.denbi.de/admin/realms/scorpion/users?enabled=True", headers={'Authorization': f'Bearer {token}'})
+    # kc_response.raise_for_status()
+    # users = kc_response.json()
+    # results = []
+    # for user in users:
+    #     if not 'service-account' in user['username']:
+    #         is_admin = await check_admin_role({'sub': user['id']}, token)
+            
+    #         providers = read_providers_by_user(user['id'])
+            
+    #         results.append(schemas.UserDetail(
+    #             user_id=user['id'],
+    #             email=user['email'],
+    #             user_name=user['username'],
+    #             is_admin=is_admin,
+    #             providers=providers
+    #         ))
+    neo_users = neo_models.User.match_nodes()
     results = []
-    for user in users:
-        if not 'service-account' in user['username']:
-            is_admin = await check_admin_role({'sub': user['id']}, token)
-            
-            providers = read_providers_by_user(user['id'])
-            
-            results.append(schemas.UserDetail(
-                user_id=user['id'],
-                email=user['email'],
-                user_name=user['username'],
-                is_admin=is_admin,
-                providers=providers
-            ))
+    for user in neo_users:
+        results.append(schemas.UserDetail(
+            user_name=user.username,
+            # email=user.email,
+            email=user.email,
+            is_admin=user.admin,
+            providers=read_providers_by_user(user.id)
+        ))
     return results
 
 @router.put('/users', response_model=schemas.UserDetail, include_in_schema=False)
