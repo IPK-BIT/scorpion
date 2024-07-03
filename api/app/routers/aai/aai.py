@@ -7,7 +7,7 @@ from icecream import ic
 
 import os
 
-from utils import jwt_utils
+from utils.jwt_utils import jwt_or_key_auth
 from utils import models as neo_models
 from routers.aai.utils import schemas
 
@@ -100,24 +100,25 @@ async def register(user: schemas.UserCreate):
     return #response.json()
 
 @router.get('/requests/registration', include_in_schema=False, response_model=list[schemas.User])
-async def get_open_registrations(jwt: dict = Depends(jwt_utils.verify_jwt)):
-    token = await get_admin_access_token()
+async def get_open_registrations(jwt: dict = Depends(jwt_or_key_auth)):
+    # token = await get_admin_access_token()
     
-    kc_response = requests.get(f"https://scorpion.bi.denbi.de/admin/realms/scorpion/users?enabled=false", headers={'Authorization': f'Bearer {token}'})
-    kc_response.raise_for_status()
-    users = kc_response.json()
+    # kc_response = requests.get(f"https://scorpion.bi.denbi.de/admin/realms/scorpion/users?enabled=false", headers={'Authorization': f'Bearer {token}'})
+    # kc_response.raise_for_status()
+    # users = kc_response.json()
 
-    response = []
-    for user in users:
-        response.append(schemas.User(
-            user_id=user['id'],
-            email=user['email'],
-            user_name=user['username']
-        ))
-    return response
+    # response = []
+    # for user in users:
+    #     response.append(schemas.User(
+    #         user_id=user['id'],
+    #         email=user['email'],
+    #         user_name=user['username']
+    #     ))
+    # return response
+    return []
 
 @router.delete('/requests/registration', include_in_schema=False)#, response_model=schemas.User)
-async def remove_registration_request(request_id:str, is_admin: bool, accept: bool, response: Response, jwt: dict = Depends(jwt_utils.verify_jwt)):
+async def remove_registration_request(request_id:str, is_admin: bool, accept: bool, response: Response, jwt: dict = Depends(jwt_or_key_auth)):
     token = await get_admin_access_token()
     if await check_admin_role(jwt, token):
         if accept:
@@ -148,7 +149,7 @@ async def remove_registration_request(request_id:str, is_admin: bool, accept: bo
     return None
 
 @router.get('/details', response_model=schemas.UserDetail)
-async def get_user(current_user: dict = Depends(jwt_utils.verify_jwt)):
+async def get_user(current_user: dict = Depends(jwt_or_key_auth)):
     # token = await get_admin_access_token()
     # is_admin = await check_admin_role(current_user, token)
     # providers = read_providers_by_user(current_user['sub'])
@@ -171,7 +172,7 @@ async def get_user(current_user: dict = Depends(jwt_utils.verify_jwt)):
     )
     
 @router.post('/requests/membership', response_model=schemas.Request, status_code=status.HTTP_201_CREATED)
-def request_membership(providers: str, jwt: dict = Depends(jwt_utils.verify_jwt)):
+def request_membership(providers: str, jwt: dict = Depends(jwt_or_key_auth)):
     neo_user = neo_models.User.match(jwt['sub'])
     neo_provider = neo_models.ServiceProvider.match(providers)
     request_id = uuid4().hex
@@ -191,7 +192,7 @@ def request_membership(providers: str, jwt: dict = Depends(jwt_utils.verify_jwt)
     )
 
 @router.get('/requests/membership', response_model=list[schemas.Request], include_in_schema=False)
-async def get_membership_requests(jwt: dict = Depends(jwt_utils.verify_jwt)):
+async def get_membership_requests(jwt: dict = Depends(jwt_or_key_auth)):
     cypher = f"""
     MATCH (u:USER)-[m:IS_MEMBER {{approved: 0}}]->(p:ServiceProvider) 
     RETURN *
@@ -216,7 +217,7 @@ async def get_membership_requests(jwt: dict = Depends(jwt_utils.verify_jwt)):
     return member_requests
 
 @router.delete('/requests/membership', response_model=schemas.Request|None, include_in_schema=False)
-async def remove_membership_request(request_id:str, accept: bool, response: Response, jwt: dict = Depends(jwt_utils.verify_jwt)):    
+async def remove_membership_request(request_id:str, accept: bool, response: Response, jwt: dict = Depends(jwt_or_key_auth)):    
     neo_user = neo_models.User.match(jwt['sub'])    
     if neo_user.admin:
         graph = GraphConnection()
@@ -239,7 +240,7 @@ async def remove_membership_request(request_id:str, accept: bool, response: Resp
     return
     
 @router.get('/users', response_model=list[schemas.UserDetail], include_in_schema=False)
-async def list_all_users(jwt: dict = Depends(jwt_utils.verify_jwt)):
+async def list_all_users(jwt: dict = Depends(jwt_or_key_auth)):
     # token = await get_admin_access_token()
     # kc_response = requests.get(f"https://scorpion.bi.denbi.de/admin/realms/scorpion/users?enabled=True", headers={'Authorization': f'Bearer {token}'})
     # kc_response.raise_for_status()
@@ -271,7 +272,7 @@ async def list_all_users(jwt: dict = Depends(jwt_utils.verify_jwt)):
     return results
 
 @router.put('/users', response_model=schemas.UserDetail, include_in_schema=False)
-async def update_user(user: schemas.UserDetail, response: Response, jwt: dict = Depends(jwt_utils.verify_jwt)):
+async def update_user(user: schemas.UserDetail, response: Response, jwt: dict = Depends(jwt_or_key_auth)):
     token = await get_admin_access_token()
     if await check_admin_role(jwt, token):
         user_response = requests.get(f"https://scorpion.bi.denbi.de/admin/realms/scorpion/users?username={user.user_name}", headers={'Authorization': f'Bearer {token}'})
@@ -299,7 +300,7 @@ async def update_user(user: schemas.UserDetail, response: Response, jwt: dict = 
     return user
 
 @router.delete('/users', response_model=schemas.UserDetail, include_in_schema=False)
-async def remove_user(user_name: str, response: Response, jwt: dict=Depends(jwt_utils.verify_jwt)):
+async def remove_user(user_name: str, response: Response, jwt: dict=Depends(jwt_or_key_auth)):
     token = await get_admin_access_token()
     if await check_admin_role(jwt, token): 
         user = requests.get(f"https://scorpion.bi.denbi.de/admin/realms/scorpion/users?username={user_name}", headers={'Authorization': f'Bearer {token}'})
@@ -328,3 +329,34 @@ async def remove_user(user_name: str, response: Response, jwt: dict=Depends(jwt_
         is_admin=False,
         providers=[]
     )
+
+@router.get('/tokens', include_in_schema=False)
+async def get_token(current_user: dict = Depends(jwt_or_key_auth)):
+    graph = GraphConnection()
+    cypher=f"""
+    MATCH (u:USER {{id: $user_id}})-[:HAS_TOKEN]->(t:TOKEN)
+    RETURN t {{.value}}
+    """
+    params = {
+        "user_id": current_user['sub']
+    }
+    results = graph.cypher_read_many(cypher, params)
+    tokens = []
+    for result in results:
+        tokens.append(result['t']['value'])
+    return tokens
+
+@router.post('/tokens', include_in_schema=False)
+async def create_token(current_user: dict = Depends(jwt_or_key_auth)):
+    neo_user = neo_models.User.match(current_user['sub'])
+    token = neo_models.Token(value=uuid4().hex)
+    token.create()
+    hasToken = neo_models.HasToken(source=neo_user, target=token)
+    hasToken.merge()
+    
+    return token.value
+
+@router.delete('/tokens', include_in_schema=False)
+async def delete_token(token: str, current_user: dict = Depends(jwt_or_key_auth)):
+    neo_models.Token.delete(token)
+    return True

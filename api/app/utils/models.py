@@ -46,6 +46,12 @@ class User(BaseNode):
     username: str
     email: str
 
+class Token(BaseNode):
+    __primaryproperty__="value"
+    __primarylabel__="TOKEN"
+
+    value: str
+
 class ServiceCategory(BaseNode):
     __primaryproperty__="name"
     __primarylabel__="CATEGORY"
@@ -82,6 +88,12 @@ class Measurement(BaseNode):
     comment: str|None
     date: str
     
+class HasToken(BaseRelationship):
+    __relationshiptype__='HAS_TOKEN'
+
+    source: User
+    target: Token
+
 class IsMember(BaseRelationship):
     __relationshiptype__="IS_MEMBER"
     

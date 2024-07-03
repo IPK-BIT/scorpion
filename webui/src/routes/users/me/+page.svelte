@@ -8,6 +8,7 @@
 	let details: UserDetail = { user_name: '', email: '', is_admin: false, providers: [] };
 	let providers: ServiceProvider[] = [];
 	let openRequests: MembershipRequest[] = [];
+	let tokens: string[] = [];
 	onMount(async () => {
 		let response = await axios.get('/details', {
 			baseURL: $api.base_url + $api.modules.aai
@@ -35,6 +36,12 @@
 				return e.mail === details.email;
 			});
 		}
+		response = await axios.get('/tokens', {
+			baseURL: $api.base_url + $api.modules.aai
+		});
+		if (response.status === 200) {
+			tokens = response.data;
+		}
 	});
 </script>
 
@@ -44,4 +51,4 @@
 	<script src="https://cdn.plot.ly/plotly-latest.min.js" type="text/javascript"></script>
 </svelte:head>
 
-<Profile bind:details bind:providers bind:openRequests />
+<Profile bind:details bind:providers bind:openRequests bind:tokens/>

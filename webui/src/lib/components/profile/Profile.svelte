@@ -7,6 +7,34 @@
 
 	let selected_provider: string = '';
 
+	export let tokens: string[] = [];
+
+	async function createNewToken() {
+		const response = await axios.post(
+			'/tokens', {
+
+			},
+			{
+				baseURL: $api.base_url + $api.modules.aai
+			}
+		);
+		if (response.status === 200) {
+			tokens = [...tokens, response.data];
+		}
+	}
+
+	async function deleteToken(token: string) {
+		const response = await axios.delete(
+			'/tokens', {
+				baseURL: $api.base_url + $api.modules.aai,
+				params: { token: token }
+			}
+		);
+		if (response.data) {
+			tokens = tokens.filter((t) => t !== token);
+		}
+	}
+
 	async function requestMembership() {
 		const response = await axios.post(
 			'/requests/membership',
@@ -76,6 +104,26 @@
 					<input type="checkbox" disabled class="checkbox" />
 				</label>
 			{/each}
+			<div class="divider">
+			API Keys
+			</div>
+			<div class="flex justify-end">
+				<button class="btn btn-info btn-sm" on:click={createNewToken}>Create API Key</button>
+			</div>
+			<table class="table">
+				<!-- <thead>
+					<th>API Key</th>
+					<th>Action</th>
+				</thead> -->
+				<tbody class="table-zebra">
+					{#each tokens as token}
+					<tr>
+						<td>{token}</td>
+						<td><button class="btn btn-sm hover:btn-error" on:click={()=>{deleteToken(token)}}>DELETE</button></td>
+					</tr>
+					{/each}
+				</tbody>
+			</table>
 		</div>
 	</Card>
 </div>

@@ -7,7 +7,8 @@ from neontology import init_neontology
 from icecream import ic
 
 from utils import sqlite_database
-from utils.jwt_utils import JWTBearer, verify_jwt
+# from utils.jwt_utils import JWTBearer, verify_jwt
+from utils.jwt_utils import verify_jwt, jwt_or_key_auth
 from routers.aai import aai
 from routers.aai.utils import models as aai_models
 from routers.external import external
@@ -39,5 +40,5 @@ def redirect_docs():
     return "http://localhost:8000/docs"     
 
 app.include_router(aai.router)
-app.include_router(internal.router, dependencies=[Depends(verify_jwt)])
-app.include_router(external.router, dependencies=[Depends(verify_jwt)])
+app.include_router(internal.router, dependencies=[Depends(jwt_or_key_auth)])
+app.include_router(external.router, dependencies=[Depends(jwt_or_key_auth)])

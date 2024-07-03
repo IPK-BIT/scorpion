@@ -16,7 +16,7 @@ router = APIRouter(
 )
 
 @router.get("/providers", response_model=responses.Response[schemas.ServiceProvider])
-async def list_providers(commons: CommonDeps, token: dict = Depends(jwt_utils.verify_jwt), is_member: bool|None = None):
+async def list_providers(commons: CommonDeps, token: dict = Depends(jwt_utils.jwt_or_key_auth), is_member: bool|None = None):
     page = commons["page"] if commons["page"]!=None else 0
     pageSize = commons["pageSize"] if commons["pageSize"]!=None else 100
     skip = page*pageSize
@@ -63,7 +63,7 @@ async def list_measurements(commons: CommonDeps, service: str, indicators: str|N
 async def create_measurements(
     service: str,
     measurements: list[schemas.Measurement]|schemas.Measurement,
-    token: dict = Depends(jwt_utils.verify_jwt)
+    token: dict = Depends(jwt_utils.jwt_or_key_auth)
 ):
     user_id=token['sub']
     results = []
