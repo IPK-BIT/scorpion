@@ -17,7 +17,10 @@ class UserLogin(BaseModel):
 class UserDetail(UserBase):
     is_admin: bool
     providers: list[str]
-    
+
+class TokenCreate(BaseModel):
+    name: str
+
 class Request(BaseModel):
     id: str
     mail: str

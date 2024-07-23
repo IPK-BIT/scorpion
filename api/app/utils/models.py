@@ -51,6 +51,7 @@ class Token(BaseNode):
     __primarylabel__="TOKEN"
 
     value: str
+    name: str
 
 class ServiceCategory(BaseNode):
     __primaryproperty__="name"

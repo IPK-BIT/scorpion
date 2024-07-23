@@ -6,20 +6,24 @@
 	import axios from 'axios';
 
 	let selected_provider: string = '';
+	let tokenName: string = '';
+	let tokenValue: string = '';
 
 	export let tokens: string[] = [];
 
 	async function createNewToken() {
+		console.log(tokenName);
 		const response = await axios.post(
 			'/tokens', {
-
+				name: tokenName
 			},
 			{
 				baseURL: $api.base_url + $api.modules.aai
 			}
 		);
 		if (response.status === 200) {
-			tokens = [...tokens, response.data];
+			tokenValue = response.data;
+			tokens = [tokenName, ...tokens];
 		}
 	}
 
@@ -51,6 +55,10 @@
 			];
 			selected_provider = '';
 		}
+	}
+
+	function openTokenModal() {
+		document.getElementById('my_modal_4')?.showModal();
 	}
 
 	export let providers: ServiceProvider[];
@@ -108,7 +116,7 @@
 			API Keys
 			</div>
 			<div class="flex justify-end">
-				<button class="btn btn-info btn-sm" on:click={createNewToken}>Create API Key</button>
+				<button class="btn btn-info btn-sm" on:click={openTokenModal}>Create API Key</button>
 			</div>
 			<table class="table">
 				<!-- <thead>
@@ -151,4 +159,36 @@
 			<button class="btn btn-secondary" on:click={requestMembership}>Request Membership</button>
 		</div>
 	</form>
+</dialog>
+
+
+<dialog id="my_modal_4" class="modal">
+	<div class="modal-box">
+	<form method="dialog">
+		<button class="btn btn-circle btn-ghost absolute right-2 top-2"><Close size={32} /></button>
+	</form>
+	{#if !tokenValue}
+		<h3 class="font-bold text-lg">Create API Key</h3>
+		<div class="join w-full py-2">
+			<label class="label space-x-2">
+				<span class="label-text">Name</span>
+				<input class="input input-bordered input-sm" bind:value={tokenName}/>
+			</label>
+		</div>
+		<div class="flex justify-end">
+			<button class="btn btn-secondary" on:click={createNewToken}>Create API Key</button>
+		</div>
+	{:else}
+		<h3 class="font-bold text-lg">API Key</h3>
+		<div class="bg-warning p-2 rounded-md">Make sure you safe the API Key securely, you won't be able to see it again!</div>
+		<div class="join w-full py-2">
+			<div class="p-2 bg-neutral-50 border border-dashed flex justify-center w-full">
+				<span>{tokenValue}</span>
+			</div>
+		</div>
+		<div class="flex justify-end">
+			<button class="btn btn-secondary" on:click={()=>{tokenValue = ''; document.getElementById('my_modal_4')?.close()}}>Close</button>
+		</div>
+	{/if}
+	</div>
 </dialog>

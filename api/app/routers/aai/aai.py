@@ -335,7 +335,7 @@ async def get_token(current_user: dict = Depends(jwt_or_key_auth)):
     graph = GraphConnection()
     cypher=f"""
     MATCH (u:USER {{id: $user_id}})-[:HAS_TOKEN]->(t:TOKEN)
-    RETURN t {{.value}}
+    RETURN t {{.name}}
     """
     params = {
         "user_id": current_user['sub']
@@ -343,20 +343,51 @@ async def get_token(current_user: dict = Depends(jwt_or_key_auth)):
     results = graph.cypher_read_many(cypher, params)
     tokens = []
     for result in results:
-        tokens.append(result['t']['value'])
+        tokens.append(result['t']['name'])
     return tokens
 
 @router.post('/tokens', include_in_schema=False)
-async def create_token(current_user: dict = Depends(jwt_or_key_auth)):
+async def create_token(body: schemas.TokenCreate, current_user: dict = Depends(jwt_or_key_auth)):
+    graph = GraphConnection()
+    cypher=f"""
+    MATCH (u:USER {{id: $user_id}})--(t:TOKEN {{name: $name}})
+    RETURN t
+    """
+    params = {
+        "user_id": current_user['sub'],
+        "name": body.name
+    }
+    results = graph.cypher_read(cypher, params)
+    if results:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail="Token name already exists"
+        )
+    
     neo_user = neo_models.User.match(current_user['sub'])
-    token = neo_models.Token(value=uuid4().hex)
+    token = neo_models.Token(value=uuid4().hex, name=body.name)
     token.create()
     hasToken = neo_models.HasToken(source=neo_user, target=token)
     hasToken.merge()
-    
+
     return token.value
 
 @router.delete('/tokens', include_in_schema=False)
 async def delete_token(token: str, current_user: dict = Depends(jwt_or_key_auth)):
-    neo_models.Token.delete(token)
-    return True
+    graph = GraphConnection()
+    cypher=f"""
+    MATCH (u:USER {{id: $user_id}})-[h:HAS_TOKEN]->(t:TOKEN {{name: $token}})
+    DELETE h, t
+    """
+    params = {
+        "user_id": current_user['sub'],
+        "token": token
+    }
+    try:
+        graph.cypher_write(cypher, params)
+        return True
+    except:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail="Token not found"
+        )
