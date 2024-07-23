@@ -108,8 +108,9 @@ def create_measurement(user_id, service: str, measurement: schemas.Measurement):
         return None
     if db_kpi is None:
         return None    
+    date = measurement.date+"-01T00:00:00Z" if len(measurement.date)==7 else measurement.date+"T00:00:00Z"
     point = (
-        Point(provider["providerAbbr"]).tag("service", service).field(measurement.kpi, measurement.value).time(measurement.date+"-01T00:00:00Z","s")
+        Point(provider["providerAbbr"]).tag("service", service).field(measurement.kpi, measurement.value).time(date,"s")
     )
     write_api.write(bucket=bucket, org=org, record=point)
     return measurement
