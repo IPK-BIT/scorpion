@@ -222,8 +222,9 @@ def get_measurements_for_service(service: str, indicator_list: list[str], start:
 def get_all_services(skip: int, limit: int, provider: str|None, service: str|None):
     cypher = f"""
     MATCH (c:CATEGORY)<-[:OF_CATEGORY]-(s:SERVICE)<-[:HAS_SERVICES]-(p:ServiceProvider)
+    OPTIONAL MATCH (s)-[:PROVIDED_IN]->(consort:CONSORTIA)
     WHERE (p.providerAbbr in split($provider,',') or $provider is null) AND (s.abbreviation=$service or $service is null)
-    RETURN s {{.name, .abbreviation, .license, .stage}},c {{.name}},p {{.providerAbbr, .providerName}}
+    RETURN s {{.name, .abbreviation, .license, .stage}},c {{.name}},p {{.providerAbbr, .providerName}}, collect(consort.name) as consortia
     """
     params={
         "provider": provider, 
@@ -245,7 +246,8 @@ def get_all_services(skip: int, limit: int, provider: str|None, service: str|Non
     db_results = [{
         "service": models.Service.parse_obj(record["s"]), 
         "category": models.ServiceCategory.parse_obj(record["c"]),
-        "provider": models.ServiceProvider.parse_obj(record["p"])
+        "provider": models.ServiceProvider.parse_obj(record["p"]),
+        "consortia": record["consortia"]
     } for record in records]
     results = []
     ctr = 0
@@ -256,7 +258,9 @@ def get_all_services(skip: int, limit: int, provider: str|None, service: str|Non
                 abbreviation=db_result["service"].abbreviation,
                 name=db_result["service"].name,
                 category=db_result["category"].name,
-                provider=db_result["provider"].providerAbbr
+                provider=db_result["provider"].providerAbbr,
+                license=db_result["service"].license,
+                consortia=db_result["consortia"]
             ))
         ctr=ctr+1
     return responses.Response(

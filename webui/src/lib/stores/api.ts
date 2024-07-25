@@ -13,7 +13,8 @@ export const token: Writable<Token> = writable('');
 
 export const serviceOverview: Writable<ServiceOverview> = writable({
 	categories: [],
-	providers: []
+	providers: [],
+	licenses: []
 });
 
 export const licenses: Writable<License[]> = writable([]);

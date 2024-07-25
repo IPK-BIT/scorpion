@@ -9,6 +9,8 @@ class Service(BaseModel):
     name: str
     category: str
     provider: str|None
+    license: str|None
+    consortia: list[str]
 
 class Measurement(BaseModel):
     kpi: str

@@ -11,6 +11,7 @@ export type Token = string;
 export type ServiceOverview = {
 	categories: string[];
 	providers: string[];
+	licenses: string[];
 };
 
 export type ServiceCategory = {
@@ -28,6 +29,7 @@ export type Service = {
 	name: string;
 	category: string;
 	provider?: string;
+	license: string;
 };
 
 export type ServiceArea = {

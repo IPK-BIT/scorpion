@@ -6,38 +6,55 @@
 	export let id: string;
 	export let services: Service[] = [];
 
+	let selectedConsortia: string | undefined;
 	let selectedKind: string | undefined;
 
 	function drawChart() {
 		let plotDiv = document.getElementById(id);
 
+		console.log($serviceOverview);	
+
 		let counts = {};
+		var labels: string[] = [];
 		if (selectedKind === 'category') {
 			for (let category of $serviceOverview.categories) {
 				//@ts-ignore
 				counts[category] = 0;
 			}
-		} else {
+			labels = $serviceOverview.categories;
+		} else if (selectedKind === 'provider') {
 			for (let provider of $serviceOverview.providers) {
 				//@ts-ignore
 				counts[provider] = 0;
 			}
+			labels = $serviceOverview.providers;
+		} else if (selectedKind === 'license') {
+			for (let license of $serviceOverview.licenses) {
+				//@ts-ignore
+				counts[license] = 0;
+			}
+			labels = $serviceOverview.licenses;
 		}
 
-		for (var service of services) {
+		let filteredServices = services;
+		if (selectedConsortia) {
+			//@ts-ignore
+			filteredServices = services.filter(service => service.consortia.includes(selectedConsortia));
+		}
+		console.log('services', services)
+		for (var service of filteredServices) {
 			//@ts-ignore
 			counts[service[selectedKind]] += 1;
 		}
-		console.log(counts);
-		console.log(new Set($serviceOverview.providers).values());
+		
+		//@ts-ignore
+		labels = labels.filter(label => counts[label] > 0);
+
 
 		var data = [
 			{
 				values: Object.values(counts),
-				labels:
-					selectedKind === 'category'
-						? $serviceOverview.categories
-						: [...new Set($serviceOverview.providers)],
+				labels: labels,
 				type: 'pie'
 			}
 		];
@@ -62,6 +79,21 @@
 				<option value={undefined} disabled selected>Pick one</option>
 				<option value="category">Category</option>
 				<option value="provider">Provider</option>
+				<option value="license">License</option>
+			</select>
+		</div>
+		<div class="form-control">
+			<label for="consortia-select" class="label">
+				<span class="label-text">Filtered by consortia</span>
+			</label>
+			<select 
+				id="consortia-select" 
+				class="select select-bordered"
+				bind:value={selectedConsortia}
+				on:change={drawChart}>
+				<option value={undefined}>All</option>
+				<option value="NFDI4Biodiversity">NFDI4Biodiversity</option>
+				<option value="NFDI4Microbiota">NFDI4Microbiota</option>
 			</select>
 		</div>
 		{#if selectedKind}

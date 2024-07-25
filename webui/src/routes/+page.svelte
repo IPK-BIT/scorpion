@@ -15,14 +15,20 @@
 			services = serviceResponse.data.result;
 		}
 		var categories: string[] = [],
-			providers: string[] = [];
+			providers: string[] = [],
+			licenses: string[] = [];
 		for (let service of services) {
-			if (service.provider) {
-				!categories.includes(service.category) ? categories.push(service.category) : null;
-				!providers.includes(service.category) ? providers.push(service.provider) : null;
+			if (service.category!='Consortia') {
+				if (service.provider) {
+					!categories.includes(service.category) ? categories.push(service.category) : null;
+					!providers.includes(service.provider) ? providers.push(service.provider) : null;
+					if (service.license) {
+						!licenses.includes(service.license) ? licenses.push(service.license) : null;
+					}
+				}
 			}
 		}
-		serviceOverview.set({ categories: categories, providers: providers });
+		serviceOverview.set({ categories: categories, providers: providers, licenses: licenses });
 	});
 
 	let services: Service[] = [];
