@@ -12,8 +12,6 @@
 	function drawChart() {
 		let plotDiv = document.getElementById(id);
 
-		console.log($serviceOverview);	
-
 		let counts = {};
 		var labels: string[] = [];
 		if (selectedKind === 'category') {
@@ -41,7 +39,6 @@
 			//@ts-ignore
 			filteredServices = services.filter(service => service.consortia.includes(selectedConsortia));
 		}
-		console.log('services', services)
 		for (var service of filteredServices) {
 			//@ts-ignore
 			counts[service[selectedKind]] += 1;
@@ -50,6 +47,9 @@
 		//@ts-ignore
 		labels = labels.filter(label => counts[label] > 0);
 
+		counts = Object.fromEntries(
+			Object.entries(counts).filter(([key, value]) => labels.includes(key))
+		);
 
 		var data = [
 			{
