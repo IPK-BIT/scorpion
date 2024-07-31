@@ -1,0 +1,22 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Scorpion
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Manuel
+    family-names: Feser
+    email: feser@ipk-gatersleben.de
+    name-particle: Manuel
+    affiliation: IPK Gatersleben.de
+    orcid: 'https://orcid.org/0000-0001-6546-1818'
+repository-code: 'https://github.com/IPK-BIT/scorpion'
+url: 'https://scorpion.bi.denbi.de/'
+keywords:
+  - KPI Monitoring
+  - Service Monitoring
+license: MIT
