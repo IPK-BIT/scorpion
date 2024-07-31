@@ -5,6 +5,7 @@
 	import Header from '$lib/components/Header.svelte';
 	import { onMount } from 'svelte';
 	import axios from 'axios';
+	import { goto } from '$app/navigation';
 
 	onMount(async () => {
 		// get URL search params
@@ -37,6 +38,13 @@
 		if (tmp) {
 			$token = tmp;
 			axios.defaults.headers.common['Authorization'] = 'Bearer ' + $token;
+			try {
+				const response = await axios.get('https://login.aai.lifescience-ri.eu/oidc/userinfo');
+			} catch (error) {
+				token.set('');
+				localStorage.setItem('token', '');
+				goto('/');
+			}
 		}
 	});
 </script>
