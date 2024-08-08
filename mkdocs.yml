@@ -1,0 +1,54 @@
+site_name: Scorpion Documentation
+repo_name: Scorpion
+repo_url: https://github.com/IPK-BIT/scorpion
+nav:
+  - Home: index.md
+  - Getting Started: users.md
+  - API Documentation: api.md
+  - Deployment: deployment.md
+theme:
+  name: material
+  logo: assets/favicon.png
+  favicon: assets/scorpion-favicon.png
+  icon:
+    repo: fontawesome/brands/github
+  palette:
+    primary: custom
+    accent: custom
+  features:
+    - content.code.annotate
+    - content.code.copy
+    - content.tabs.link
+    - search.highlight
+extra_css:
+  - stylesheets/extra.css
+watch:
+  - includes
+# plugins: 
+#   - offline
+#   - privacy
+markdown_extensions:
+  - abbr
+  - attr_list
+  - admonition
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.snippets:
+      auto_append:
+        - includes/abbreviations.md
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+# extra:
+#   consent:
+#     title: Cookie consent
+#     description: >- 
+#       We use cookies to recognize your repeated visits and preferences, as well
+#       as to measure the effectiveness of our documentation and whether users
+#       find what they're searching for. With your consent, you're helping us to
+#       make our documentation better.
+#     actions:
+#       - accept
