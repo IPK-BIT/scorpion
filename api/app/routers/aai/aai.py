@@ -161,12 +161,13 @@ async def get_user(current_user: dict = Depends(jwt_or_key_auth)):
     # )
     print(current_user)
     neo_user = neo_models.User.match(current_user['sub'])
+    print(neo_user)
     if not neo_user:
         neo_user = neo_models.User(id=current_user['sub'], admin=False, username=current_user['preferred_username'], email=current_user['email'])
         neo_user.create()
     return schemas.UserDetail(
-        user_name=current_user['preferred_username'],
-        email=current_user['email'],
+        user_name=neo_user.username,
+        email=neo_user.email,
         is_admin=neo_user.admin,
         providers=read_providers_by_user(current_user['sub'])
     )

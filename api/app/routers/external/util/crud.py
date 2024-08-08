@@ -222,18 +222,20 @@ def get_measurements_for_service(service: str, indicator_list: list[str], start:
 def get_all_services(skip: int, limit: int, provider: str|None, service: str|None):
     cypher = f"""
     MATCH (c:CATEGORY)<-[:OF_CATEGORY]-(s:SERVICE)<-[:HAS_SERVICES]-(p:ServiceProvider)
-    OPTIONAL MATCH (s)-[:PROVIDED_IN]->(consort:CONSORTIA)
     WHERE (p.providerAbbr in split($provider,',') or $provider is null) AND (s.abbreviation=$service or $service is null)
+    WITH *
+    OPTIONAL MATCH (s)-[:PROVIDED_IN]->(consort:CONSORTIA)
     RETURN s {{.name, .abbreviation, .license, .stage}},c {{.name}},p {{.providerAbbr, .providerName}}, collect(consort.name) as consortia
     """
     params={
         "provider": provider, 
         "service": service
     }
+    ic(params)
     graph = GraphConnection()
     records = graph.cypher_read_many(cypher, params)
     
-    # ic(records)
+    ic(records)
 
     # for record in records:
     #     # ic(record["s"])

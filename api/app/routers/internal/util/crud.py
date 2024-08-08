@@ -1,3 +1,4 @@
+from icecream import ic
 from neontology import GraphConnection
 from uuid import uuid4
 import json
@@ -126,7 +127,9 @@ def create_kpi(kpi: schemas.KPI):
     return kpi
 
 def delete_measurements(service: str, start: str, stop: str):
+    ic(start,stop)
     response = get_measurements_for_service(service, [], start, stop, 0, 100)
+    ic(response)
     delete_api.delete(start, stop, predicate='service="'+service+'"', bucket=bucket, org=org)
     print(response)
     return response
