@@ -14,7 +14,8 @@
 	async function createNewToken() {
 		console.log(tokenName);
 		const response = await axios.post(
-			'/tokens', {
+			'/tokens',
+			{
 				name: tokenName
 			},
 			{
@@ -28,12 +29,10 @@
 	}
 
 	async function deleteToken(token: string) {
-		const response = await axios.delete(
-			'/tokens', {
-				baseURL: $api.base_url + $api.modules.aai,
-				params: { token: token }
-			}
-		);
+		const response = await axios.delete('/tokens', {
+			baseURL: $api.base_url + $api.modules.aai,
+			params: { token: token }
+		});
 		if (response.data) {
 			tokens = tokens.filter((t) => t !== token);
 		}
@@ -112,9 +111,7 @@
 					<input type="checkbox" disabled class="checkbox" />
 				</label>
 			{/each}
-			<div class="divider">
-			API Keys
-			</div>
+			<div class="divider">API Keys</div>
 			<div class="flex justify-end">
 				<button class="btn btn-info btn-sm" on:click={openTokenModal}>Create API Key</button>
 			</div>
@@ -125,10 +122,17 @@
 				</thead> -->
 				<tbody class="table-zebra">
 					{#each tokens as token}
-					<tr>
-						<td>{token}</td>
-						<td><button class="btn btn-sm hover:btn-error" on:click={()=>{deleteToken(token)}}>DELETE</button></td>
-					</tr>
+						<tr>
+							<td>{token}</td>
+							<td
+								><button
+									class="btn btn-sm hover:btn-error"
+									on:click={() => {
+										deleteToken(token);
+									}}>DELETE</button
+								></td
+							>
+						</tr>
 					{/each}
 				</tbody>
 			</table>
@@ -161,34 +165,41 @@
 	</form>
 </dialog>
 
-
 <dialog id="my_modal_4" class="modal">
 	<div class="modal-box">
-	<form method="dialog">
-		<button class="btn btn-circle btn-ghost absolute right-2 top-2"><Close size={32} /></button>
-	</form>
-	{#if !tokenValue}
-		<h3 class="font-bold text-lg">Create API Key</h3>
-		<div class="join w-full py-2">
-			<label class="label space-x-2">
-				<span class="label-text">Name</span>
-				<input class="input input-bordered input-sm" bind:value={tokenName}/>
-			</label>
-		</div>
-		<div class="flex justify-end">
-			<button class="btn btn-secondary" on:click={createNewToken}>Create API Key</button>
-		</div>
-	{:else}
-		<h3 class="font-bold text-lg">API Key</h3>
-		<div class="bg-warning p-2 rounded-md">Make sure you safe the API Key securely, you won't be able to see it again!</div>
-		<div class="join w-full py-2">
-			<div class="p-2 bg-neutral-50 border border-dashed flex justify-center w-full">
-				<span>{tokenValue}</span>
+		<form method="dialog">
+			<button class="btn btn-circle btn-ghost absolute right-2 top-2"><Close size={32} /></button>
+		</form>
+		{#if !tokenValue}
+			<h3 class="font-bold text-lg">Create API Key</h3>
+			<div class="join w-full py-2">
+				<label class="label space-x-2">
+					<span class="label-text">Name</span>
+					<input class="input input-bordered input-sm" bind:value={tokenName} />
+				</label>
 			</div>
-		</div>
-		<div class="flex justify-end">
-			<button class="btn btn-secondary" on:click={()=>{tokenValue = ''; document.getElementById('my_modal_4')?.close()}}>Close</button>
-		</div>
-	{/if}
+			<div class="flex justify-end">
+				<button class="btn btn-secondary" on:click={createNewToken}>Create API Key</button>
+			</div>
+		{:else}
+			<h3 class="font-bold text-lg">API Key</h3>
+			<div class="bg-warning p-2 rounded-md">
+				Make sure you safe the API Key securely, you won't be able to see it again!
+			</div>
+			<div class="join w-full py-2">
+				<div class="p-2 bg-neutral-50 border border-dashed flex justify-center w-full">
+					<span>{tokenValue}</span>
+				</div>
+			</div>
+			<div class="flex justify-end">
+				<button
+					class="btn btn-secondary"
+					on:click={() => {
+						tokenValue = '';
+						document.getElementById('my_modal_4')?.close();
+					}}>Close</button
+				>
+			</div>
+		{/if}
 	</div>
 </dialog>

@@ -18,7 +18,7 @@
 			providers: string[] = [],
 			licenses: string[] = [];
 		for (let service of services) {
-			if (service.category!='Consortia') {
+			if (service.category != 'Consortia') {
 				if (service.provider) {
 					!categories.includes(service.category) ? categories.push(service.category) : null;
 					!providers.includes(service.provider) ? providers.push(service.provider) : null;

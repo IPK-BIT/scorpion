@@ -37,15 +37,17 @@
 		let filteredServices = services;
 		if (selectedConsortia) {
 			//@ts-ignore
-			filteredServices = services.filter(service => service.consortia.includes(selectedConsortia));
+			filteredServices = services.filter((service) =>
+				service.consortia.includes(selectedConsortia)
+			);
 		}
 		for (var service of filteredServices) {
 			//@ts-ignore
 			counts[service[selectedKind]] += 1;
 		}
-		
+
 		//@ts-ignore
-		labels = labels.filter(label => counts[label] > 0);
+		labels = labels.filter((label) => counts[label] > 0);
 
 		counts = Object.fromEntries(
 			Object.entries(counts).filter(([key, value]) => labels.includes(key))
@@ -86,11 +88,12 @@
 			<label for="consortia-select" class="label">
 				<span class="label-text">Filtered by consortia</span>
 			</label>
-			<select 
-				id="consortia-select" 
+			<select
+				id="consortia-select"
 				class="select select-bordered"
 				bind:value={selectedConsortia}
-				on:change={drawChart}>
+				on:change={drawChart}
+			>
 				<option value={undefined}>All</option>
 				<option value="NFDI4Biodiversity">NFDI4Biodiversity</option>
 				<option value="NFDI4Microbiota">NFDI4Microbiota</option>

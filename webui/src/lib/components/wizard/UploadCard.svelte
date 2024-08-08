@@ -57,7 +57,9 @@
 				}}>Next</button
 			>
 		{:else}
-			<button class="btn btn-primary btn-sm float-right" on:click|preventDefault={finish}>Submit</button>
+			<button class="btn btn-primary btn-sm float-right" on:click|preventDefault={finish}
+				>Submit</button
+			>
 		{/if}
 	</div>
 </section>

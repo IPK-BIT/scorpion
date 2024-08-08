@@ -51,4 +51,4 @@
 	<script src="https://cdn.plot.ly/plotly-latest.min.js" type="text/javascript"></script>
 </svelte:head>
 
-<Profile bind:details bind:providers bind:openRequests bind:tokens/>
+<Profile bind:details bind:providers bind:openRequests bind:tokens />

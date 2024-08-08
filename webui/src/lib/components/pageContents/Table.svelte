@@ -16,7 +16,7 @@
 
 	function checkDaily() {
 		for (let date of dates) {
-			if (date.substring(8,10)!='01') {
+			if (date.substring(8, 10) != '01') {
 				return true;
 			}
 		}
@@ -41,13 +41,17 @@
 			{#each dates as date}
 				<tr class="hover text-center">
 					{#if checkDaily()}
-					<td class="font-semibold bg-base-300"
-						>{new Date(date).toLocaleDateString('en', { year: 'numeric', month: 'short', day: 'numeric' })}</td
-					>
+						<td class="font-semibold bg-base-300"
+							>{new Date(date).toLocaleDateString('en', {
+								year: 'numeric',
+								month: 'short',
+								day: 'numeric'
+							})}</td
+						>
 					{:else}
-					<td class="font-semibold bg-base-300"
-						>{new Date(date).toLocaleDateString('en', { year: 'numeric', month: 'short' })}</td
-					>
+						<td class="font-semibold bg-base-300"
+							>{new Date(date).toLocaleDateString('en', { year: 'numeric', month: 'short' })}</td
+						>
 					{/if}
 					{#each results[dates.findIndex((x) => {
 							return x === date;

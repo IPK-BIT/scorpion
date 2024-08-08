@@ -44,8 +44,10 @@
 	<section class="pt-4 flex justify-center">
 		<div class="text-lg w-[50%]">
 			<p>
-				Scorpion stores personal data of its user as provided through the AAI. This data is used to identify users when requesting membership to Service Providers. 
-				The stored information can be viewed in the <a href="/users/me" class="link">user profile</a>. The personal data includes the scopes as agreed in the login process:
+				Scorpion stores personal data of its user as provided through the AAI. This data is used to
+				identify users when requesting membership to Service Providers. The stored information can
+				be viewed in the <a href="/users/me" class="link">user profile</a>. The personal data
+				includes the scopes as agreed in the login process:
 			</p>
 			<ul class="space-y-2 bg-white rounded-lg shadow-md p-4 m-4">
 				<li>LS Identifier</li>
