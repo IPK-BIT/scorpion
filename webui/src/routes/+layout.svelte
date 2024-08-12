@@ -18,10 +18,10 @@
 				grant_type: 'authorization_code',
 				code: code,
 				client_id: 'aa30af02-f470-4508-880e-8f8c99652143',
-				redirect_uri: 'https://scorpion.bi.denbi.de',
+				redirect_uri: 'http://192.168.0.64:3000',
 				code_verifier: verifier
 			};
-			let res = await axios.post('https://login.aai.lifescience-ri.eu/oidc/token', data, {
+			let res = await axios.post('http://192.168.0.64:5000/oidc/token', data, {
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded'
 				}
@@ -39,7 +39,7 @@
 			$token = tmp;
 			axios.defaults.headers.common['Authorization'] = 'Bearer ' + $token;
 			try {
-				const response = await axios.get('https://login.aai.lifescience-ri.eu/oidc/userinfo');
+				const response = await axios.get('http://192.168.0.64:5000/oidc/userinfo');
 			} catch (error) {
 				token.set('');
 				localStorage.setItem('token', '');
