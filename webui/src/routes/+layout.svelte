@@ -6,7 +6,7 @@
 	import { onMount } from 'svelte';
 	import axios from 'axios';
 	import { goto } from '$app/navigation';
-	import { PUBLIC_DEV } from '$env/static/public';
+	import { PUBLIC_ENVIRONMENT } from '$env/static/public';
 
 	onMount(async () => {
 		// get URL search params
@@ -55,7 +55,7 @@
 {:else}
 	<div class="app">
 		<Header />
-		{#if PUBLIC_DEV}
+		{#if PUBLIC_ENVIRONMENT==='dev'||PUBLIC_ENVIRONMENT==='test'}
 		<div class="p-2">
 		<div role="alert" class="alert alert-error">
 			<svg
@@ -69,7 +69,11 @@
 				stroke-width="2"
 				d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
 			</svg>
+			{#if PUBLIC_ENVIRONMENT==='dev'}
 			<span>Warning: Development Instance. There are no backups made and data can be deleted without further notice!</span>
+			{:else}
+			<span>Warning: Test Instance. There are no backups made and data can be deleted without further notice!</span>
+			{/if}
 		  </div>
 		</div>
 		{/if}
