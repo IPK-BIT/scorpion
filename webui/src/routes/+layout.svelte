@@ -6,7 +6,7 @@
 	import { onMount } from 'svelte';
 	import axios from 'axios';
 	import { goto } from '$app/navigation';
-	import { PUBLIC_ENVIRONMENT } from '$env/static/public';
+	import { PUBLIC_ENVIRONMENT, PUBLIC_OIDC_URL, PUBLIC_DOMAIN_NAME } from '$env/static/public';
 
 	onMount(async () => {
 		// get URL search params
@@ -19,10 +19,10 @@
 				grant_type: 'authorization_code',
 				code: code,
 				client_id: 'aa30af02-f470-4508-880e-8f8c99652143',
-				redirect_uri: 'http://192.168.0.64:3000',
+				redirect_uri: PUBLIC_DOMAIN_NAME,
 				code_verifier: verifier
 			};
-			let res = await axios.post('http://192.168.0.64:5000/oidc/token', data, {
+			let res = await axios.post(`${PUBLIC_OIDC_URL}/oidc/token`, data, {
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded'
 				}
@@ -40,7 +40,7 @@
 			$token = tmp;
 			axios.defaults.headers.common['Authorization'] = 'Bearer ' + $token;
 			try {
-				const response = await axios.get('http://192.168.0.64:5000/oidc/userinfo');
+				const response = await axios.get(`${PUBLIC_OIDC_URL}/oidc/userinfo`);
 			} catch (error) {
 				token.set('');
 				localStorage.setItem('token', '');
