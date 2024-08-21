@@ -15,7 +15,8 @@ To deploy Scorpion, you must have the following prerequisites met:
 
 __Software:__
 
-- **Docker:** Version 27.0.3 or later is required. Ensure Docker is installed and running correctly on your system.
+- **Ansible:** 2.17.3 or later is required. Ensure Ansible is installed and running correctly on your control node.
+- **Docker:** Version 27.0.3 or later is required. Ensure Docker is installed and running correctly on your hosting system.
 - **Docker Compose:** Version 2.28.1 or later is needed. Docker Compose should also be installed and configured properly alongside Docker.
 
 __Hardware Specifications:__
@@ -27,15 +28,16 @@ __Hardware Specifications:__
 
 __Network Configurations:__
 
-- **Ports:** The application requires ports 80 and 443 to be open and available for HTTP and HTTPS traffic respectively. Ensure these ports are not blocked by any firewalls or security groups.
+- **Ports:** The application requires ports `80` and `443` to be open and available for HTTP and HTTPS traffic respectively. Ensure these ports are not blocked by any firewalls or security groups. For the web UI port `3000` is used by the docker container, for the API `8000`. The docker containers for the databases use ports `8086`, `7474` and `7687`. 
 
 ## Service Deployment Process
 
 ### Pre-deployment Checks
 
-Before deploying Scorpion, you need to clone the repository.
+Before starting the deployment process. Download and extract the latest release on your control node.
+Ensure that the control node has access to the managed node(s). Adapt the `ansible.cfg` as necessary.
 
-=== "HTTPS"
+<!-- === "HTTPS"
     ```bash
     git clone https://github.com/IPK-BIT/scorpion.git
     ```
@@ -48,57 +50,30 @@ Before deploying Scorpion, you need to clone the repository.
 === "Github CLI"
     ```bash
     gh repo clone IPK-BIT/scorpion
-    ```
+    ``` -->
 
 ### Deployment Steps
 
-!!! danger "Attention"
+**Step 1: Prepare Playbook Execution**
 
-    This is a pretty manual deployment process, since we're really focusing on developing the central hosted instance. But if you're set on hosting your own instance, you'll need to make a few changes to the source code, especially for the base URLs. We'll be providing proper deployment tooling as time allows, so keep an eye out for that!
+The ansible playbook comes along templates, files and variable environments. Familiarize yourself with them and adapt as necessary. The environments are preconfigured but empty and need to be filled according to your set up. 
 
-**Step 1: Prepare Environment Variables**
+**Step 2: Deploy Scorpion Components**
 
-Ensure that `.env` files are present in both `/api/app/` and `/webui/`. These files should contain all necessary environment variables for the application to function correctly.
-
-**Step 2: Deploy API Component**
-
-Navigate to the `api/` directory. Adjust the path for the database storages according to your setup and execute the following command to start the API component using Docker Compose:
-
-```bash 
-cd ./api && docker-compose up -d
-```
-
-This command starts the API server as well as the neo4j and influxDB databases in detached mode.
-
-**Step 3: Deploy WebUI Component**
-
-Change the current directory to `webui/` and run the following command to deploy the WebUI component:
+When you have configured everything, you can start the deployment by executing:
 
 ```bash
-cd ../webui && docker-compose up -d
+ansible-playbook -i environments/<ENV>/hosts playbook.yml
 ```
 
-This command starts the web interface and the proxy in detached mode.
+Don't forget to change `<ENV>` to the environment you want to deploy.
 
-**Step 4: Add Resources to API Component**
+**Step 3: Proxy setup**
 
-Create and add the `jwt-key.crt` and `jwt-key.pem` files to the `api/app/` directory. These files are crucial for secure communication within the application.
+While depending on your setup, ensure that the reverse proxy is set up correctly and redirects traffic to the correct hosts and ports.
 
-**Step 5: Configure the Proxy**
-
-Open `localhost:81` in your web browser to access the Nginx Proxy Manager web interface. Create a new Proxy Host for `INTERNAL_IP:3000` to your domain name and add SSL certificates as necessary. Configure the custom locations as follows:
-
-- `/aai` -> `INTERNAL_IP:8000`
-- `/api/v1` -> `INTERNAL_IP:8000`
-- `/docs` -> `INTERNAL_IP:8000`
-
-**Step 6: Update Neo4j Password**
-
-Access the Neo4j Web UI at `localhost:7474`, change the default, store it in the `.env` file located in `api/app/`, and proceed to add the KPI, Categories, and Service Providers to the Neo4j graph. The specific queries for adding these elements will be provided separately.
-
-**Step 7: Set Up InfluxDB Bucket and Token**
-
-Open the InfluxDB Web UI at `localhost:8086` and create a bucket named `kpis`. Generate an API token and add this token to the `.env` file located in `api/app/`.
+- API Port: `8000`
+- Web UI Port: `3000`
 
 ### Post-deployment Verification
 

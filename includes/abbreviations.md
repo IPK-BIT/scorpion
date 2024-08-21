@@ -3,3 +3,4 @@
 *[KPI]: Key Performance Indicator
 *[NFDI]: National Research Data Infrastructure
 *[REST]: Represential State Transfer
+*[UI]: User Interface

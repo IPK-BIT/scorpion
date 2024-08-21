@@ -1,8 +1,10 @@
 import { readable, writable, type Readable, type Writable } from 'svelte/store';
 import type { API, License, ServiceOverview, Token } from './types';
+// @ts-ignore
+import {PUBLIC_API_URL} from '$env/static/public';
 
 export const api: Readable<API> = readable({
-	base_url: 'https://scorpion.bi.denbi.de',
+	base_url: PUBLIC_API_URL,
 	modules: {
 		aai: '/aai',
 		v1: '/api/v1'

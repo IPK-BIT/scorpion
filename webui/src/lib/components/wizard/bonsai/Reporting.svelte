@@ -6,8 +6,14 @@
 	import { onMount } from 'svelte';
 	import { metadata } from '$lib/stores/bonsai';
 
+	let categories = [];
+
 	onMount(async () => {
-		const response = await axios.get('/indicators', {
+		let response = await axios.get('/categories', {
+			baseURL: $api.base_url+$api.modules.v1,
+		}); 
+		categories = response.data.result;
+		response = await axios.get('/indicators', {
 			baseURL: $api.base_url + $api.modules.v1,
 			params: {
 				category: $metadata.category
@@ -90,13 +96,16 @@
 	>
 		<option disabled selected value="">Please select one category</option>
 		<!--TODO Dynamic Categories-->
-		<option>Databases</option>
+		<!-- <option>Databases</option>
 		<option>Tools</option>
 		<option>Webapplications</option>
 		<option>Libraries</option>
 		<option>Workflows</option>
 		<option>Supports</option>
-		<option>Trainings</option>
+		<option>Trainings</option> -->
+		{#each categories as categoryOption}
+			<option>{categoryOption.name}</option>
+		{/each}
 		<!-- <option>Consortia</option> -->
 	</select>
 	{#if categoryKPI}

@@ -8,6 +8,7 @@ from neontology import GraphConnection
 import json
 import requests
 import base64
+import os
 # from datetime import datetime, timedelta
 # from utils.dependencies import get_db
 # from routers.aai.utils import models, schemas
@@ -114,7 +115,7 @@ def jwt_auth(auth: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=
     }
     try:
         # response = requests.get("https://scorpion.bi.denbi.de/realms/scorpion/protocol/openid-connect/userinfo", headers=headers)
-        response = requests.get("https://login.aai.lifescience-ri.eu/oidc/userinfo", headers=headers)
+        response = requests.get(f"{os.getenv('OIDC_URI')}/oidc/userinfo", headers=headers)
         response.raise_for_status()
         
         jwt = auth.credentials.split(".")[1]

@@ -150,20 +150,10 @@ async def remove_registration_request(request_id:str, is_admin: bool, accept: bo
 
 @router.get('/details', response_model=schemas.UserDetail)
 async def get_user(current_user: dict = Depends(jwt_or_key_auth)):
-    # token = await get_admin_access_token()
-    # is_admin = await check_admin_role(current_user, token)
-    # providers = read_providers_by_user(current_user['sub'])
-    # return schemas.UserDetail(
-    #     user_name=current_user['preferred_username'],
-    #     email=current_user['email'],
-    #     is_admin=is_admin,
-    #     providers=providers
-    # )
-    print(current_user)
     neo_user = neo_models.User.match(current_user['sub'])
-    print(neo_user)
     if not neo_user:
-        neo_user = neo_models.User(id=current_user['sub'], admin=False, username=current_user['preferred_username'], email=current_user['email'])
+        first_user = len(neo_models.User.match_nodes())==0
+        neo_user = neo_models.User(id=current_user['sub'], admin=first_user, username=current_user['preferred_username'], email=current_user['email'])
         neo_user.create()
     return schemas.UserDetail(
         user_name=neo_user.username,

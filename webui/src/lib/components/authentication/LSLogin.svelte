@@ -1,6 +1,8 @@
 <script>
 	import { onMount } from 'svelte';
 	import image from '$lib/assets/button-ls-login.svg';
+	// @ts-ignore
+	import { PUBLIC_OIDC_URL, PUBLIC_DOMAIN_NAME } from '$env/static/public';
 
 	function generateCodeVerifier() {
 		let codeVerifier = btoa(
@@ -49,7 +51,7 @@
 	// Configuration of Authorization endpoint
 	const response_type = 'code';
 	const client_id = 'aa30af02-f470-4508-880e-8f8c99652143';
-	let redirect_uri = 'https://scorpion.bi.denbi.de';
+	let redirect_uri = PUBLIC_DOMAIN_NAME;
 	const scope = 'openid profile email';
 	const state = '123456';
 
@@ -65,16 +67,21 @@
 			code_challenge_method: 'S256'
 		};
 		const urlParams = new URLSearchParams(params);
-		const authUrl = `https://login.aai.lifescience-ri.eu/oidc/authorize?${urlParams.toString()}`;
+		const authUrl = `${PUBLIC_OIDC_URL}/oidc/authorize?${urlParams.toString()}`;
 		window.location.href = authUrl;
 	}
 </script>
 
 <div class="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100 p-4 space-y-2">
+	{#if PUBLIC_OIDC_URL=='https://login.aai.lifescience-ri.eu'}
 	<h1 class="text-2xl font-semibold flex justify-center">Login</h1>
 	<button on:click={authorize}><img src={image} alt="LS Login" /></button>
 	<a
 		href="https://signup.aai.lifescience-ri.eu/registrar/?vo=lifescience&group=relying_services%3AScorpion"
 		class="link pr-2 text-xs flex justify-end">Register</a
 	>
+	{:else}
+	<h1 class="text-2xl font-semibold flex justify-center">Development Instance</h1>
+	<button class="btn btn-accent" on:click={authorize}>LOGIN</button>
+	{/if}
 </div>
