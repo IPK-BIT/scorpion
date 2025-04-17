@@ -90,6 +90,9 @@ def check_membership(user_id: str, provider: str):
     return not graph.cypher_read(cypher, params)==None
 
 def create_measurement(user_id, service: str, measurement: schemas.Measurement):
+    if measurement.value < 0:
+        return None
+    
     db_service = models.Service.match(service)
     if db_service is None:
         return None

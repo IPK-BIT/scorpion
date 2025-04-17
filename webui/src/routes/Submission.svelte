@@ -90,9 +90,23 @@
     
     let msg;
 
+    function validate() {
+        for (let kpi of kpis) {
+            if (!measurementCollector[kpi.name] || measurementCollector[kpi.name] <= 0) {
+                msg = { type: 'error', text: `Invalid value for KPI: ${kpi.name}` };
+                return false;
+            }
+        }
+        return true;
+    }
+
     async function submit() {
         let service = services.find((s)=>s.abbreviation === selectedService);
         let data = [];
+
+        if (!validate()) {
+            return;
+        }
 
         for (let kpi of kpis) {
             if (measurementCollector[kpi.name]) {
@@ -104,8 +118,6 @@
                 });
             }
         }
-        console.log(measurementCollector);
-        console.log(data);
 
         const response = await axios.post('/measurements', data, {
             baseURL: $api.base_url + $api.modules.v1,
@@ -158,6 +170,11 @@
                     </select>
 
                     <label for="date" class="fieldset-label">Submission Date</label>
+                    {#if navigator.userAgent.toLowerCase().includes('firefox')}
+                    <div class="alert alert-warning mb-2">
+                        <span>Note: Date input may not be fully supported in Firefox. Please ensure the format is correct. <i class="italic">(YYYY-MM)</i></span>
+                    </div>
+                    {/if}
                     <input type="month" class="input w-full" bind:value={measurementCollector.date} />
                 </fieldset>
 
@@ -171,7 +188,7 @@
                         {#if kpi.categories.find((c) => c.name==services.find((s)=>s.abbreviation === selectedService).category).necessity==='mandatory'}
                         <label class="floating-label">
                             <span>{kpi.name}</span>
-                            <input type="number" placeholder={kpi.name} class="input input-md w-full" bind:value={measurementCollector[kpi.name]} />
+                            <input type="number" min="0" placeholder={kpi.name} class="input input-md w-full" bind:value={measurementCollector[kpi.name]} />
                           </label>
                         {/if}
                         {/each}
@@ -182,7 +199,7 @@
                         {#if kpi.categories.find((c) => c.name==services.find((s)=>s.abbreviation === selectedService).category).necessity==='recommended'}
                         <label class="floating-label">
                             <span>{kpi.name}</span>
-                            <input type="number" placeholder={kpi.name} class="input input-md w-full" bind:value={measurementCollector[kpi.name]} />
+                            <input type="number" min="0" placeholder={kpi.name} class="input input-md w-full" bind:value={measurementCollector[kpi.name]} />
                           </label>
                         {/if}
                         {/each}
@@ -193,7 +210,7 @@
                         {#if kpi.categories.find((c) => c.name==services.find((s)=>s.abbreviation === selectedService).category).necessity==='optional' || kpi.categories.find((c) => c.name==services.find((s)=>s.abbreviation === selectedService).category).necessity===null}
                         <label class="floating-label">
                             <span>{kpi.name}</span>
-                            <input type="number" placeholder={kpi.name} class="input input-md w-full" bind:value={measurementCollector[kpi.name]} />
+                            <input type="number" min="0" placeholder={kpi.name} class="input input-md w-full" bind:value={measurementCollector[kpi.name]} />
                           </label>
                         {/if}
                         {/each}

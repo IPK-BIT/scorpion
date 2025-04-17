@@ -16,6 +16,10 @@
 
 <div class="stat">
     <div class="stat-title">{indicator.name}</div>
-    <div class="stat-value text-primary">{(Math.floor(stats.avg*100)/100).toLocaleString()}</div>
+    <div class="stat-value text-primary">
+        <div class="tooltip tooltip-bottom" data-tip="Average">
+            {(Math.floor(stats.avg*100)/100).toLocaleString()}
+        </div>        
+    </div>
     <div class="stat-desc">Min: {stats.min.toLocaleString()} - Max: {stats.max.toLocaleString()}</div>
 </div>

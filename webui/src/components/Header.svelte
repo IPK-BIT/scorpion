@@ -30,10 +30,10 @@
             <li><a class="text-base-content" href="#/submit">KPI Submission</a></li>
             <li><a class="text-base-content hover:bg-warning" href="#/admin">Administration</a></li>
           </ul>
-        <div class="flex flex-row items-center">
+          <a href="#/" class="flex flex-row items-center">
             <img class="w-10 h-10" src={config.prefix+"/scorpion-transparent.png"} alt="scorpion" />
             <h1 class="text-xl">Scorpion</h1>
-        </div>
+          </a>
     </div>
     <div class="ml-auto flex items-center px-2">
         <button class="btn btn-outline btn-circle btn-sm" popovertarget="popover-2" style="anchor-name:--anchor-2">
