@@ -109,12 +109,21 @@
 					if (key !== 'date') {
 						let last_value = last_submission[key];
 						let previous_value = previous_submission[key];
-						let percentage = Math.floor(((100*last_value)/previous_value)-100);
-						stats = [...stats, {
-							name: key,
-							value: last_value,
-							desc: `${percentage>=0?'+':''}${percentage}% from last submission`,
-						}]
+						console.log(previous_value)
+						if (previous_value == null) {
+							stats = [...stats, {
+								name: key,
+								value: last_value,
+								desc: 'No previous data',
+							}]
+						} else {
+							let percentage = Math.floor(((100*last_value)/previous_value)-100);
+							stats = [...stats, {
+								name: key,
+								value: last_value,
+								desc: `${percentage>=0?'+':''}${percentage}% from last submission`,
+							}]
+						}	
 					}
 				}
 			} else if (result_table.length==1) {
