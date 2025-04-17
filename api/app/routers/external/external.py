@@ -4,14 +4,19 @@ from typing import Annotated
 from icecream import ic
 from utils import models, schemas, jwt_utils, responses
 from routers.external.util import crud
+from dotenv import load_dotenv
+import os
 
 async def common_parameters(page: Annotated[int|None, Query(ge=0)] = None, pageSize: Annotated[int|None, Query(gt=0)] = None):
     return {"page": page, "pageSize": pageSize}
 
 CommonDeps = Annotated[dict, Depends(common_parameters)]
 
+load_dotenv()
+prefix = os.getenv("PREFIX")
+
 router = APIRouter(
-    prefix="/api/v1",
+    prefix=f"{prefix}/api/v1",
     tags=["Public Endpoints"]
 )
 

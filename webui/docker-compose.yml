@@ -1,6 +1,5 @@
-version: '3'
 services:
-  scorpion-ui:
+  web:
     build: .
     ports:
-      - 3000:3000
+      - "3000:80"

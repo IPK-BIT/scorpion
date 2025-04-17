@@ -36,7 +36,8 @@ def create_service(service: schemas.Bonsai):
     db_consortia = []
     graph = GraphConnection()
     for consortium in service.consortia:
-        db_consortia.append(models.Consortia.parse_obj(graph.cypher_read(f"""MATCH (c:CONSORTIA) WHERE c.name=$consortium RETURN c {{ .name }}""", {"consortium": consortium})['c']))
+        ic(consortium)
+        db_consortia.append(models.Consortia.parse_obj(graph.cypher_read(f"""MATCH (c:CONSORTIA) WHERE c.abbreviation=$consortium RETURN c {{ .name }}""", {"consortium": consortium})['c']))
         # db_consortia.append(models.Consortia.match(consortium))
         
     
@@ -127,9 +128,6 @@ def create_kpi(kpi: schemas.KPI):
     return kpi
 
 def delete_measurements(service: str, start: str, stop: str):
-    ic(start,stop)
     response = get_measurements_for_service(service, [], start, stop, 0, 100)
-    ic(response)
     delete_api.delete(start, stop, predicate='service="'+service+'"', bucket=bucket, org=org)
-    print(response)
     return response

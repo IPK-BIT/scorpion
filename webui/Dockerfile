@@ -1,11 +1,13 @@
-FROM node
-
+# Build stage
+FROM node:22 AS build
 WORKDIR /app
-
-COPY package.json ./
-COPY package-lock.json ./
+COPY package*.json ./
 RUN npm install
-COPY . ./
+COPY . .
 RUN npm run build
 
-CMD ["node", "./build"]
+# Deploy stage
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html/
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

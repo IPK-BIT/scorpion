@@ -1,52 +1,51 @@
-version: '3'
-
 services:
-  web:
-    build: ./app
-    ports: 
-      - 8000:80
-    volumes:
-      - ./app:/code
-    depends_on:
-      neo4j:
-        condition: service_healthy
-      influxdb: 
-        condition: service_healthy
-  neo4j:
-    image: neo4j:3.5
-    restart: unless-stopped
-    ports:
-      - 7474:7474
-      - 7687:7687
-    volumes:
-      - /mnt/database-storage/neo4j/conf:/conf
-      - /mnt/database-storage/neo4j/data:/data
-      - /mnt/database-storage/neo4j/import:/import
-      - /mnt/database-storage/neo4j/logs:/logs
-      - /mnt/database-storage/neo4j/plugins:/plugins
-    environment: 
-      # Raise memory limits
-      - NEO4J_dbms_memory_pagecache_size=1G
-      - NEO4J_dbms.memory.heap.initial_size=1G
-      - NEO4J_dbms_memory_heap_max__size=1G
-    healthcheck:
-      test: wget http://localhost:7474 || exit 1
-      interval: 2s
-      timeout: 5s
-      retries: 5
-  influxdb:
-    image: influxdb:2.7-alpine
-    restart: unless-stopped
-    environment:
-      - INFLUXDB=influx
-      - INFLUXDB_ADMIN_USER=admin
-      - INFLUXDB_ADMIN_PASSWORD=admin
-    ports:
-      - 8086:8086
-    volumes:
-      - /mnt/database-storage/new-influxdb2:/var/lib/influxdb2
-    healthcheck:
-      test: wget http://localhost:8086 || exit 1
-      interval: 2s
-      timeout: 5s
-      retries: 5
+    api:
+        build: ./app
+        ports: 
+        - 8000:80
+        volumes:
+        - ./app:/code
+        depends_on:
+            neo4j:
+                condition: service_healthy
+            influxdb: 
+                condition: service_healthy
+    neo4j:
+        image: neo4j:3.5
+        restart: unless-stopped
+        volumes:
+            - /mnt/database-storage/neo4j/conf:/conf
+            - /mnt/database-storage/neo4j/data:/data
+            - /mnt/database-storage/neo4j/import:/import
+            - /mnt/database-storage/neo4j/logs:/logs
+            - /mnt/database-storage/neo4j/plugins:/plugins
+            - /mnt/database-storage/init.cypher:/docker-entrypoint-initdb.d/init.cypher
+        ports:
+            - "7474:7474"
+            - "7687:7687"
+        environment: 
+            - NEO4J_AUTH=neo4j/password
+            - NEO4J_dbms_memory_pagecache_size=1G
+            - NEO4J_dbms.memory.heap.initial_size=1G
+            - NEO4J_dbms_memory_heap_max__size=1G
+        healthcheck:
+            test: wget http://localhost:7474 || exit 1
+            interval: 2s
+            timeout: 20s
+            retries: 10
+    influxdb:
+        image: influxdb:2.7-alpine
+        restart: unless-stopped
+        environment:
+        - INFLUXDB=influx
+        - INFLUXDB_ADMIN_USER=admin
+        - INFLUXDB_ADMIN_PASSWORD=admin
+        ports:
+        - 8086:8086
+        volumes:
+        - /mnt/database-storage/new-influxdb2:/var/lib/influxdb2
+        healthcheck:
+            test: wget http://localhost:8086 || exit 1
+            interval: 2s
+            timeout: 20s
+            retries: 10

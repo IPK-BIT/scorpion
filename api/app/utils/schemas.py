@@ -11,6 +11,7 @@ class Service(BaseModel):
     provider: str|None
     license: str|None
     consortia: list[str]
+    stage: str|None
 
 class Measurement(BaseModel):
     kpi: str

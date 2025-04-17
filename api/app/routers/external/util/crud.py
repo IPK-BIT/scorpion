@@ -262,7 +262,8 @@ def get_all_services(skip: int, limit: int, provider: str|None, service: str|Non
                 category=db_result["category"].name,
                 provider=db_result["provider"].providerAbbr,
                 license=db_result["service"].license,
-                consortia=db_result["consortia"]
+                consortia=db_result["consortia"],
+                stage=db_result["service"].stage
             ))
         ctr=ctr+1
     return responses.Response(

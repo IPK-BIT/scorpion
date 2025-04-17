@@ -2,9 +2,14 @@ from fastapi import APIRouter
 from icecream import ic
 from utils import models, schemas, responses
 from routers.internal.util import crud
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+prefix = os.getenv("PREFIX")
 
 router = APIRouter(
-    prefix="/api/v1",
+    prefix=f"{prefix}/api/v1",
     tags=["Internal Endpoints"],
     include_in_schema=False
 )
@@ -68,3 +73,7 @@ async def create_service(service: schemas.Bonsai):
 @router.delete('/measurements', response_model=responses.Response[schemas.Measurement])
 async def delete_measurements(service: str, start: str, stop: str):
     return crud.delete_measurements(service, start, stop)
+
+@router.get('/notification')
+async def get_notifications():
+    return 'We just released Version 2 of the Web Interface. If you encounter any introduced bugs, please report them <a class="underline" href="https://github.com/IPK-BIT/scorpion/issues">here</a>.'

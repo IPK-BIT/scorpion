@@ -17,10 +17,13 @@ from routers.internal import internal
 aai_models.Base.metadata.create_all(bind=sqlite_database.engine)
 load_dotenv()
 
+prefix=os.getenv("PREFIX")
+
 app = FastAPI(
     title="ScorPIoN API",
     version="0.1.0",
-    openapi_url="/api/v1/openapi.json"
+    openapi_url=f"{prefix}/api/v1/openapi.json",
+    docs_url=f"{prefix}/docs",
 )
 
 app.add_middleware(

@@ -6,14 +6,17 @@ import requests
 from icecream import ic
 
 import os
+from dotenv import load_dotenv
 
 from utils.jwt_utils import jwt_or_key_auth
 from utils import models as neo_models
 from routers.aai.utils import schemas
 
+load_dotenv()
+prefix = os.getenv('PREFIX')
 
 router = APIRouter(
-    prefix="/aai",
+    prefix=f"{prefix}/aai",
     tags=["AAI"]
 )
 
@@ -250,6 +253,9 @@ async def list_all_users(jwt: dict = Depends(jwt_or_key_auth)):
     #             is_admin=is_admin,
     #             providers=providers
     #         ))
+    user = neo_models.User.match(jwt['sub'])
+    if not user.admin:
+        return []
     neo_users = neo_models.User.match_nodes()
     results = []
     for user in neo_users:
@@ -263,31 +269,58 @@ async def list_all_users(jwt: dict = Depends(jwt_or_key_auth)):
     return results
 
 @router.put('/users', response_model=schemas.UserDetail, include_in_schema=False)
-async def update_user(user: schemas.UserDetail, response: Response, jwt: dict = Depends(jwt_or_key_auth)):
-    token = await get_admin_access_token()
-    if await check_admin_role(jwt, token):
-        user_response = requests.get(f"https://scorpion.bi.denbi.de/admin/realms/scorpion/users?username={user.user_name}", headers={'Authorization': f'Bearer {token}'})
-        user_response.raise_for_status()
-        user_id = user_response.json()[0]['id']
-        
-        roles_response = requests.get(f"https://scorpion.bi.denbi.de/admin/realms/scorpion/roles", headers={'Authorization': f'Bearer {token}'})
-        roles_response.raise_for_status()
-        roles = roles_response.json()
-        admin_role = next((role for role in roles if role['name'] == 'admin'), None)
-        if user.is_admin:
-            response = requests.post(f"https://scorpion.bi.denbi.de/admin/realms/scorpion/users/{user_id}/role-mappings/realm", headers={'Authorization': f'Bearer {token}'}, json=[
-                admin_role
-            ])
-        else:
-            response = requests.delete(f"https://scorpion.bi.denbi.de/admin/realms/scorpion/users/{user_id}/role-mappings/realm", headers={'Authorization': f'Bearer {token}'}, json=[
-                admin_role
-            ])
-            
-        #TODO: update provider memberships
-        
-        response.raise_for_status()
-    else:
-        response.status_code=status.HTTP_403_FORBIDDEN
+async def update_user(user: schemas.UserDetail, response: Response, jwt: dict = Depends(jwt_or_key_auth)):  
+    jwt_user = neo_models.User.match(jwt['sub'])
+    if not jwt_user.admin:
+        return {}
+    
+    graph = GraphConnection()
+    cypher = f"""
+    MATCH (u:USER {{username: $user_name}})
+    OPTIONAL MATCH (u)-[:IS_MEMBER]->(p:ServiceProvider)
+    RETURN u, collect(p.providerAbbr) as providers
+    """
+    params = {
+        "user_name": user.user_name
+    }
+    results = graph.cypher_read_many(cypher, params)
+    
+    current_providers = results[0]['providers']
+    new_providers = user.providers
+    
+    for provider in set(current_providers + new_providers):
+        if provider in current_providers and provider not in new_providers:
+            cypher = f"""
+            MATCH (u:USER {{username: $user_name}})-[m:IS_MEMBER]->(p:ServiceProvider {{providerAbbr: $provider}})
+            DELETE m
+            """
+            params = {
+                "user_name": user.user_name,
+                "provider": provider
+            }
+            graph.cypher_write(cypher, params)
+        elif provider not in current_providers and provider in new_providers:
+            cypher = f"""
+            MATCH (u:USER {{username: $user_name}}), (p:ServiceProvider {{providerAbbr: $provider}})
+            MERGE (u)-[:IS_MEMBER {{approved: 1}}]->(p)
+            """
+            params = {
+                "user_name": user.user_name,
+                "provider": provider
+            }
+            graph.cypher_write(cypher, params)
+    
+    if not user.is_admin == results[0]['u']['admin']:
+        cypher = f"""
+        MATCH (u:USER {{username: $user_name}})
+        SET u.admin = $is_admin
+        """
+        params = {
+            "user_name": user.user_name,
+            "is_admin": user.is_admin
+        }
+        graph.cypher_write(cypher, params)
+    
     return user
 
 @router.delete('/users', response_model=schemas.UserDetail, include_in_schema=False)
